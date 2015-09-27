@@ -719,7 +719,7 @@ class Properties(object):
 
         :param source_data: Input data to parse. May be a :class:`str` which will be decoded according to
                 `encoding`, a :class:`unicode` object or a file-like object providing transparent decoding
-                to :class:`unicode`.
+                to :class:`unicode` (see :func:`codecs.open`).
         :param encoding: If `source_data` is a :class:`str`, this specifies what encoding should be used to decode it.
         :return: None
         :raise: IOError, EOFError, ParseError, UnicodeDecodeError (if source_data needs to be decoded)
