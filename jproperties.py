@@ -736,7 +736,7 @@ class Properties(object):
             self._source_file = StringIO(source_data)
         elif encoding is not None:
             # We treat source_data as a file-like object and wrap it with a StreamReader
-            # for the requested encoding so that we don't need to decode() the data manually.
+            # for the requested encoding so that we don't need to str.decode() the data manually.
             self._source_file = codecs.getreader(encoding)(source_data)
         else:
             # Else source_data should be a file-like object providing transparent decoding,
@@ -765,7 +765,7 @@ class Properties(object):
         :param timestamp: True to write a comment line with the current time and date after the initial comments.
         :return: None.
         """
-        # Wrap the stream in an EncodedFile so that we don't need to always call string.encode().
+        # Wrap the stream in an EncodedFile so that we don't need to always call str.encode().
         out_codec_info = codecs.lookup(encoding)
         wrapped_out_stream = out_codec_info.streamwriter(
             out_stream,
