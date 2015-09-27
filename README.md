@@ -13,7 +13,38 @@ method writes the key-value pairs stored in the object to a stream in the same f
 The `load()` and `store()` methods both take an `encoding` parameter. By default this is set to `iso-8859-1`, but it
 can be set to any encoding supported by Python, including e. g. the widely used `utf-8`.
 
-_TODO:_ Explain file reading and writing by providing examples.
+### Parsing a property file
+
+```python
+p = Properties()
+with open("foobar.properties", "rb") as f:
+    p.load(f, "utf-8")
+```
+
+That's it, `p` now can be used like a dictionary containing properties from `foobar.properties`.
+
+### Writing a property file
+
+```python
+p = Properties()
+p["foobar"] = "A very important message from our sponsors: Python is great!"
+
+with open("foobar.properties", "wb") as f:
+    p.store(f, encoding="utf-8")
+```
+
+### Reading from and writing to the same file-like object
+
+```python
+with open("foobar.properties", "r+b") as f:
+    p = Properties()
+    p.load(f, "utf-8")
+
+    # Do stuff with the p object...
+
+    f.truncate(0)
+    p.store(f, encoding="utf-8")
+```
 
 ## Special features
 
