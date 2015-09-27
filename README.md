@@ -18,7 +18,7 @@ can be set to any encoding supported by Python, including e. g. the widely used 
 ### Metadata
 
 The property file parser supports including metadata in property files which can be read and set programmatically.
-Metadata for a key is represented as a Python dictionary; this dictionary should only contains strings for the keys and
+Metadata for a key is represented as a Python dictionary; this dictionary should only contains strings as the keys and
 values, although when the property file is written, all non-string objects will be converted to strings. **This is a
 one-way conversion**; when the metadata is read back again during a `load()`, all keys and values will be strings.
 
