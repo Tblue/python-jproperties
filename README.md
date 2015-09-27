@@ -19,7 +19,7 @@ _TODO:_ Explain file reading and writing by providing examples.
 
 ### Metadata
 
-The property file parser supports including metadata in property files which can be read and set programmatically.
+The property file parser supports including programmatically readable and settable metadata in property files.
 Metadata for a key is represented as a Python dictionary; the keys and values of this dictionary should be strings,
 although when the property file is written, all non-string objects will be converted to strings. **This is a
 one-way conversion**; when the metadata is read back again during a `load()`, all keys and values will be treated
