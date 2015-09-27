@@ -28,14 +28,16 @@ as simple strings.
 By default, the `store()` method does not write out the metadata. To enable that feature, set the keyword argument
 `strip_meta=False` when calling the method.
 
+Note that metadata support is always enabled. The only thing that is optional is actually writing out the metadata.
+
 #### Caveats
 
-Metadata support influences how `Properties` objects can be used as dictionary objects:
+Metadata support influences how `Properties` objects are used as dictionary objects:
 - To set a value for a key, do `prop_object[key] = value` or `prop_object[key] = value, metadata`. The first form
   will leave the key's metadata unchanged. You can also use the `setmeta()` method to set a key's metadata.
 - To get the value of a key, do `value, metadata = prop_object[key]`. If there is no metadata for a key,
   `metadata` will be an empty dictionary. To retrieve only the metadata for a key, the `getmeta()` method can be used.
-- When used as an iterator, `Properties` objects will simply return all keys in unspecified order. No metadata is
+- When used as an iterator, `Properties` objects will simply return all keys in an unspecified order. No metadata is
   returned (but can be retrieved using `getmeta()`).
 
 ### Setting defaults
@@ -47,7 +49,7 @@ However, modifying properties using this special property will **not** modify me
 deleting properties by doing `del prop_obj.properties[key]` will not remove the associated metadata from the object.
 Instead, do `del prop_obj[key]`.
 
-The `properties` property is still useful to set many default values before parsing a property file:
+The `properties` property is nevertheless useful to set many default values before parsing a property file:
 ```python
 prop_obj.properties = a_big_dictionary_with_defaults
 file_obj = codecs.open("foobar.properties", "rb", "iso-8859-1")
