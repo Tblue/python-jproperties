@@ -718,8 +718,10 @@ class Properties(object):
         Load, decode and parse an input stream (or string).
 
         :param source_data: Input data to parse. May be a :class:`str` which will be decoded according to
-                `encoding`, a :class:`unicode` object or a file-like object providing transparent decoding
-                to :class:`unicode` (see :func:`codecs.open`).
+                `encoding`, a :class:`unicode` object or a file-like object. In the last case, if `encoding`
+                is None, the file-like object is expected to provide transparent decoding to :class:`unicode`
+                (see :func:`codecs.open`); otherwise, if `encoding` is not None, then data from the file-like
+                object will be decoded using that encoding.
         :param encoding: If `source_data` is a :class:`str`, this specifies what encoding should be used to decode it.
         :return: None
         :raise: IOError, EOFError, ParseError, UnicodeDecodeError (if source_data needs to be decoded)
@@ -732,6 +734,10 @@ class Properties(object):
         elif isinstance(source_data, unicode):
             # No need to decode.
             self._source_file = StringIO(source_data)
+        elif encoding is not None:
+            # We treat source_data as a file-like object and wrap it with a StreamReader
+            # for the requested encoding so that we don't need to decode() the data manually.
+            self._source_file = codecs.getreader(encoding)(source_data)
         else:
             # Else source_data should be a file-like object providing transparent decoding,
             # i. e. a file opened with codecs.open().
