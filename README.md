@@ -8,21 +8,24 @@ the XML property format is not supported.
 
 Objects of the type `Properties` can be used like a Python dictionary (but see [Caveats](#caveats) below).
 The `load()` method populates the object by parsing input in the Java Property file format; the `store()`
-method writes the key-value pairs stored in the object to a stream, using the Java Property file format.
+method writes the key-value pairs stored in the object to a stream in the same format.
 
 The `load()` and `store()` methods both take an `encoding` parameter. By default this is set to `iso-8859-1`, but it
 can be set to any encoding supported by Python, including e. g. the widely used `utf-8`.
+
+_TODO:_ Explain file reading and writing by providing examples.
 
 ## Special features
 
 ### Metadata
 
 The property file parser supports including metadata in property files which can be read and set programmatically.
-Metadata for a key is represented as a Python dictionary; this dictionary should only contains strings as the keys and
-values, although when the property file is written, all non-string objects will be converted to strings. **This is a
-one-way conversion**; when the metadata is read back again during a `load()`, all keys and values will be strings.
+Metadata for a key is represented as a Python dictionary; the keys and values of this dictionary should be strings,
+although when the property file is written, all non-string objects will be converted to strings. **This is a
+one-way conversion**; when the metadata is read back again during a `load()`, all keys and values will be treated
+as simple strings.
 
-By default, the `store()` method does not write out metadata. To enable that feature, set the keyword argument
+By default, the `store()` method does not write out the metadata. To enable that feature, set the keyword argument
 `strip_meta=False` when calling the method.
 
 #### Caveats
