@@ -52,6 +52,8 @@ def _escape_non_ascii(unicode_obj):
     https://www.python.org/download/releases/2.7.3/license/
 
     Differences to the aforementioned original version of py_encode_basestring_ascii():
+      - Always tries to decode str objects as UTF-8, even if they don't contain any UTF-8 characters.
+        This is so that we always return an unicode object.
       - Only processes non-printable or non-ASCII characters. Also _always_ replaces these characters
         with Java-compatible Unicode escape sequences (the original function replaced e. g. newlines
         with "\n" etc.).
@@ -74,8 +76,8 @@ def _escape_non_ascii(unicode_obj):
             s2 = 0xdc00 | (n & 0x3ff)
             return '\\u{0:04x}\\u{1:04x}'.format(s1, s2)
 
-    # Just to be sure: Try to decode the str object if it seems to contain Unicode bytes.
-    if isinstance(unicode_obj, str) and re.search(r'[\x80-\xff]', unicode_obj) is not None:
+    # Just to be sure: If we get passed a str object, then try to decode it as UTF-8.
+    if isinstance(unicode_obj, str):
         unicode_obj = unicode_obj.decode('utf-8')
 
     return re.sub(
