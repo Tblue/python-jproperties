@@ -61,6 +61,9 @@ By default, the `store()` method does not write out the metadata. To enable that
 
 Note that metadata support is always enabled. The only thing that is optional is actually writing out the metadata.
 
+Metadata keys beginning with two underscores (`__`) are not written to the output stream by the `store()` method.
+Thus, they can be used to attach "runtime-only" metadata to keys.
+
 #### Caveats
 
 Metadata support influences how `Properties` objects are used as dictionary objects:
