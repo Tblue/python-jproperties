@@ -62,7 +62,7 @@ By default, the `store()` method does not write out the metadata. To enable that
 Note that metadata support is always enabled. The only thing that is optional is actually writing out the metadata.
 
 Metadata keys beginning with two underscores (`__`) are not written to the output stream by the `store()` method.
-Thus, they can be used to attach "runtime-only" metadata to keys. Currently, however, metadata with such keys is
+Thus, they can be used to attach "runtime-only" metadata to properties. Currently, however, metadata with such keys is
 still read from the input stream by `load()`; this should probably be considered erroneous behaviour.
 
 #### Caveats
