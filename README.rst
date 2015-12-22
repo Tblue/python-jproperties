@@ -103,3 +103,11 @@ The ``properties`` property is nevertheless useful to set many default values be
     prop_obj.properties = a_big_dictionary_with_defaults
     file_obj = codecs.open("foobar.properties", "rb", "iso-8859-1")
     prop_obj.load(file_obj)
+
+Version history
+---------------
+
+Version 1.0
++++++++++++
+
+- Initial release
