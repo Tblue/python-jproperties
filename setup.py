@@ -3,7 +3,7 @@ import os
 from setuptools import setup
 
 setup(
-    name="jProperties",
+    name="jproperties",
     version="1.0",
     description="Java Property file parser and writer for Python 2",
     # Read the long description from our README.rst file, as UTF-8.
