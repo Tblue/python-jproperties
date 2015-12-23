@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
     name="jproperties",
-    version="1.0",
+    version="1.0.1",
     description="Java Property file parser and writer for Python 2",
     # Read the long description from our README.rst file, as UTF-8.
     long_description=codecs.open(
@@ -23,6 +23,7 @@ setup(
         ]
     },
     url="https://github.com/Tblue/python-jproperties",
+    download_url="https://github.com/Tblue/python-jproperties/archive/v1.0.1.tar.gz",
     py_modules=["jproperties"],
     classifiers=[
         "Development Status :: 5 - Production/Stable",

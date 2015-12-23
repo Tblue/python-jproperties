@@ -107,6 +107,12 @@ The ``properties`` property is nevertheless useful to set many default values be
 Version history
 ---------------
 
+Version 1.0.1
++++++++++++++
+
+- This is the first "proper" PyPI release, with proper PyPI metadata and proper PyPI distributions.
+  Nothing else has changed.
+
 Version 1.0
 +++++++++++
 
