@@ -724,7 +724,8 @@ class Properties(object):
                 object will be decoded using that encoding.
         :param encoding: If `source_data` is a :class:`str`, this specifies what encoding should be used to decode it.
         :return: None
-        :raise: IOError, EOFError, ParseError, UnicodeDecodeError (if source_data needs to be decoded)
+        :raise: IOError, EOFError, ParseError, UnicodeDecodeError (if source_data needs to be decoded),
+                 LookupError (if encoding is unknown).
         """
         self.reset()
 
@@ -764,6 +765,8 @@ class Properties(object):
         :param strip_meta: Whether to strip metadata when writing.
         :param timestamp: True to write a comment line with the current time and date after the initial comments.
         :return: None.
+        :raise: LookupError (if encoding is unknown), IOError, UnicodeEncodeError (if data cannot be encoded as
+                 `encoding`.
         """
         # Wrap the stream in an EncodedFile so that we don't need to always call str.encode().
         out_codec_info = codecs.lookup(encoding)
