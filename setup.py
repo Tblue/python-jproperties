@@ -28,8 +28,7 @@ setup(
     setup_requires=["pytest-runner ~= 2.0"],
     tests_require=[
         "pytest",
-        "pytest-cov",
-        "pytest-datadir"
+        "pytest-cov"
     ],
     classifiers=[
         "Development Status :: 5 - Production/Stable",
