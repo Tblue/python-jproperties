@@ -1,0 +1,4 @@
+# Simple property file with UTF-8 keys and values
+
+tästkey = This is the value
+anotherkey = Not mäny välues in this file
