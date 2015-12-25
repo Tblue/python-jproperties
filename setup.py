@@ -25,6 +25,11 @@ setup(
     url="https://github.com/Tblue/python-jproperties",
     download_url="https://github.com/Tblue/python-jproperties/archive/v1.0.1.tar.gz",
     py_modules=["jproperties"],
+    setup_requires=["pytest-runner ~= 2.0"],
+    tests_require=[
+        "pytest",
+        "pytest-cov"
+    ],
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Developers",
