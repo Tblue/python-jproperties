@@ -32,6 +32,7 @@
 
 import pytest
 
+
 class _Datadir(object):
     def __init__(self, request):
         basedir = request.fspath.dirpath()
@@ -48,7 +49,7 @@ class _Datadir(object):
     def __getitem__(self, path):
         for datadir in self._datadirs:
             datadir_path = datadir.join(path)
-            if datadir_path.stat(raising=False) is not None:
+            if datadir_path.check():
                 return datadir_path
 
         raise KeyError("File `%s' not found in any of the following datadirs: %s" % (path, self._datadirs))
