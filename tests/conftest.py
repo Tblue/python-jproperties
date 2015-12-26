@@ -54,6 +54,22 @@ class _Datadir(object):
 
         raise KeyError("File `%s' not found in any of the following datadirs: %s" % (path, self._datadirs))
 
+
+class _DatadirCopy(_Datadir):
+    def __init__(self, request, tmpdir):
+        super(_DatadirCopy, self).__init__(request)
+        self._tmpdir = tmpdir
+
+    def __getitem__(self, path):
+        datadir_path = super(_DatadirCopy, self).__getitem__(path)
+        copied_path = self._tmpdir.join(path)
+
+        copied_path.dirpath().ensure(dir=True)
+        datadir_path.copy(copied_path, mode=True)
+
+        return copied_path
+
+
 @pytest.fixture
 def datadir(request):
     """
@@ -137,3 +153,37 @@ def datadir(request):
     :class:`KeyError` is raised.
     """
     return _Datadir(request)
+
+
+@pytest.fixture
+def datadir_copy(request, tmpdir):
+    """
+    Similar to the :func:`.datadir` fixture, but copies the requested resources to a temporary directory first so that
+    test functions or methods can modify their resources on-disk without affecting other test functions
+    and methods.
+
+    Each test function or method gets its own temporary directory and thus its own fresh copies of the resources it
+    requests.
+
+    **Caveat:** Each time a resource is requested using the dictionary notation, a fresh copy of the resource is made.
+    This also applies if a test function or method requests the same resource multiple times. Thus, if you modify a
+    resource and need to access the *modified* version of the resource later, save its path in a variable and use that
+    variable to access the resource later instead of using the dictionary notation multiple times::
+
+        # This creates the initial fresh copy of data.txt and saves
+        # its path in the variable "resource1".
+        resource1 = datadir_copy["data.txt"]
+
+        # ...modify resource1 on-disk...
+
+        # You now want to access the modified version of data.txt.
+
+        # WRONG way: This will overwrite your modified version of the
+        #            resource with a fresh copy!
+        fh = open(datadir_copy["data.txt"], "rb")
+
+        # CORRECT way: This will let you access the modified version
+        #              of the resource.
+        fh = open(resource1, "rb")
+    """
+    return _DatadirCopy(request, tmpdir)
