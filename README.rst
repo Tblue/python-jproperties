@@ -28,6 +28,8 @@ Parsing a property file
 
 .. code:: python
 
+    from jproperties import Properties
+
     p = Properties()
     with open("foobar.properties", "rb") as f:
         p.load(f, "utf-8")
@@ -39,6 +41,8 @@ Writing a property file
 
 .. code:: python
 
+    from jproperties import Properties
+
     p = Properties()
     p["foobar"] = "A very important message from our sponsors: Python is great!"
 
@@ -49,6 +53,8 @@ Reading from and writing to the same file-like object
 +++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 .. code:: python
+
+    from jproperties import Properties
 
     with open("foobar.properties", "r+b") as f:
         p = Properties()
@@ -107,6 +113,9 @@ The ``properties`` property is nevertheless useful to set many default values be
 
 .. code:: python
 
+    from jproperties import Properties
+
+    prop_obj = Properties()
     prop_obj.properties = a_big_dictionary_with_defaults
     file_obj = codecs.open("foobar.properties", "rb", "iso-8859-1")
     prop_obj.load(file_obj)
