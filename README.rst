@@ -1,5 +1,5 @@
-jProperties for Python 2
-========================
+jProperties for Python 2 |pypi-badge|
+=====================================
 
 jProperties is a Java Property file parser and writer for Python 2. It aims to provide the same functionality
 as `Java's Properties class <http://docs.oracle.com/javase/7/docs/api/java/util/Properties.html>`_, although
@@ -136,3 +136,13 @@ Version 1.0
 +++++++++++
 
 - Initial release
+
+
+..
+    NB: Without a trailing question mark in the following image URL, the
+        generated HTML will contain an <object> element instead of an <img>
+        element, which apparently cannot be made into a link (i. e. a
+        "clickable" image).
+.. |pypi-badge| image:: https://img.shields.io/pypi/v/jproperties.svg?
+    :align: middle
+    :target: https://pypi.python.org/pypi/jproperties
