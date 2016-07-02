@@ -27,15 +27,18 @@
 # CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-import os
-from StringIO import StringIO
+
+from __future__ import print_function
+
 import codecs
-from collections import namedtuple
+import itertools
+import os
 import re
+import six
 import sys
 import time
-import itertools
 
+from collections import namedtuple
 
 # This represents a combination of a value and metadata for a property key.
 PropertyTuple = namedtuple("PropertyTuple", ["data", "meta"])
@@ -68,20 +71,20 @@ def _escape_non_ascii(unicode_obj):
         s = match.group(0)
         n = ord(s)
         if n < 0x10000:
-            return '\\u{0:04x}'.format(n)
+            return u'\\u{0:04x}'.format(n)
         else:
             # surrogate pair
             n -= 0x10000
             s1 = 0xd800 | ((n >> 10) & 0x3ff)
             s2 = 0xdc00 | (n & 0x3ff)
-            return '\\u{0:04x}\\u{1:04x}'.format(s1, s2)
+            return u'\\u{0:04x}\\u{1:04x}'.format(s1, s2)
 
     # Just to be sure: If we get passed a str object, then try to decode it as UTF-8.
-    if isinstance(unicode_obj, str):
+    if isinstance(unicode_obj, six.binary_type):
         unicode_obj = unicode_obj.decode('utf-8')
 
     return re.sub(
-        r'[^ -~]',
+        six.text_type(r'[^ -~]'),
         replace,
         unicode_obj
     )
@@ -119,18 +122,18 @@ def _escape_str(raw_str, only_leading_spaces=False, escape_non_printing=False, l
     :return: The escaped string.
     """
     # We NEED an unicode object. It's worth a try.
-    if isinstance(raw_str, str):
+    if isinstance(raw_str, six.binary_type):
         raw_str = raw_str.decode("utf-8")
-    elif not isinstance(raw_str, unicode):
+    elif not isinstance(raw_str, six.text_type):
         # Last resort: Convert unknown object to a unicode string.
         # This works nicely for integers etc.
-        raw_str = unicode(raw_str)
+        raw_str = six.text_type(raw_str)
 
     # Do simple whitespace substitutions.
     trans_dict = {
-        ord(u"\r"): ur"\r",
-        ord(u"\n"): ur"\n",
-        ord(u"\f"): ur"\f"
+        ord(u"\r"): u"\\r",
+        ord(u"\n"): u"\\n",
+        ord(u"\f"): u"\\f"
     }
 
     # Do we want to be conform to the specs fully?
@@ -138,12 +141,12 @@ def _escape_str(raw_str, only_leading_spaces=False, escape_non_printing=False, l
         # Yes, so escape more possibly ambiguous characters as well.
         trans_dict.update(
             {
-                ord(u"#"): ur"\#",
-                ord(u"!"): ur"\!",
-                ord(u"="): ur"\=",
-                ord(u":"): ur"\:",
-                ord(u"\\"): ur"\\",
-                ord(u"\t"): ur"\t",
+                ord(u"#"): u"\\#",
+                ord(u"!"): u"\\!",
+                ord(u"="): u"\\=",
+                ord(u":"): u"\\:",
+                ord(u"\\"): u"\\\\",
+                ord(u"\t"): u"\\t",
             }
         )
 
@@ -152,9 +155,9 @@ def _escape_str(raw_str, only_leading_spaces=False, escape_non_printing=False, l
 
     # Now escape either all space characters or only a possibly present single space at the beginning.
     if not only_leading_spaces:
-        escaped_str = escaped_str.replace(u" ", ur"\ ")
+        escaped_str = escaped_str.replace(u" ", u"\\ ")
     else:
-        escaped_str = re.sub(u"^ ", ur"\\ ", escaped_str)
+        escaped_str = re.sub(u"^ ", u"\\\\ ", escaped_str)
 
     # Do we want to escape non-printing characters as well?
     if escape_non_printing:
@@ -244,7 +247,7 @@ class Properties(object):
         return len(self._properties)
 
     def __getitem__(self, item):
-        if not isinstance(item, basestring):
+        if not isinstance(item, six.string_types):
             raise TypeError("Property keys must be of type str or unicode")
 
         if item not in self._properties:
@@ -256,14 +259,14 @@ class Properties(object):
         )
 
     def __setitem__(self, key, value):
-        if not isinstance(key, basestring):
+        if not isinstance(key, six.string_types):
             raise TypeError("Property keys must be of type str or unicode")
 
         metadata = None
         if isinstance(value, tuple):
             value, metadata = value
 
-        if not isinstance(value, basestring):
+        if not isinstance(value, six.string_types):
             raise TypeError("Property values must be of type str or unicode")
 
         if metadata is not None and not isinstance(metadata, dict):
@@ -274,7 +277,7 @@ class Properties(object):
             self._metadata[key] = metadata
 
     def __delitem__(self, key):
-        if not isinstance(key, basestring):
+        if not isinstance(key, six.string_types):
             raise TypeError("Property keys must be of type str or unicode")
 
         if key not in self._properties:
@@ -500,7 +503,7 @@ class Properties(object):
             escaped_char = self._peek()
         except EOFError:
             # Nothing more to read, stray trailing backslash. Drop it.
-            return u""
+            return ""
 
         if escaped_char in self._EOL:
             # \<newline>
@@ -514,7 +517,7 @@ class Properties(object):
                 except EOFError:
                     pass
 
-            return u""
+            return ""
 
         # Not an escaped line terminator sequence -- need to manually skip the escaped character (since we
         # are not calling _handle_eol() which would do this for us if it were a line terminator sequence).
@@ -729,12 +732,12 @@ class Properties(object):
         """
         self.reset()
 
-        if isinstance(source_data, str):
+        if isinstance(source_data, six.binary_type):
             # Byte string. Need to decode.
-            self._source_file = StringIO(source_data.decode(encoding))
-        elif isinstance(source_data, unicode):
+            self._source_file = six.StringIO(source_data.decode(encoding))
+        elif isinstance(source_data, six.string_types):
             # No need to decode.
-            self._source_file = StringIO(source_data)
+            self._source_file = six.StringIO(source_data)
         elif encoding is not None:
             # We treat source_data as a file-like object and wrap it with a StreamReader
             # for the requested encoding so that we don't need to str.decode() the data manually.
@@ -759,7 +762,7 @@ class Properties(object):
                 unescaped line terminators.
         :param encoding: The encoding to write the data in.
         :param strict: Set to True to exactly behave like the Java property file writer. In particular, this will cause
-            any non-printing characters in property keys and values to be escaped using \u.... escape sequences if the
+            any non-printing characters in property keys and values to be escaped using \\u.... escape sequences if the
             encoding is set to iso-8859-1. False causes sane behaviour, i. e. only use unicode escape sequences if the
             characters cannot be represented in the target encoding.
         :param strip_meta: Whether to strip metadata when writing.
@@ -768,6 +771,14 @@ class Properties(object):
         :raise: LookupError (if encoding is unknown), IOError, UnicodeEncodeError (if data cannot be encoded as
                  `encoding`.
         """
+        print(out_stream, dir(out_stream))
+        if hasattr(out_stream, 'buffer'):
+            out_stream = out_stream.buffer
+            print("using stream.buffer")
+        else:
+            print("not using stream.buffer")
+
+
         # Wrap the stream in an EncodedFile so that we don't need to always call str.encode().
         out_codec_info = codecs.lookup(encoding)
         wrapped_out_stream = out_codec_info.streamwriter(
@@ -802,7 +813,7 @@ class Properties(object):
                 initial_comments
             )
 
-            print >> wrapped_out_stream, "#" + initial_comments
+            print(u"#" + six.text_type(initial_comments), file=wrapped_out_stream)
 
         if timestamp:
             # Print a comment line with the current time and date.
@@ -810,7 +821,7 @@ class Properties(object):
             day_of_week = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
             month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
             now = time.gmtime()
-            print >> wrapped_out_stream, "#%s %s %02d %02d:%02d:%02d UTC %04d" % (
+            print(u"#%s %s %02d %02d:%02d:%02d UTC %04d" % (
                 day_of_week[now.tm_wday],
                 month[now.tm_mon - 1],
                 now.tm_mday,
@@ -818,7 +829,7 @@ class Properties(object):
                 now.tm_min,
                 now.tm_sec,
                 now.tm_year
-            )
+            ), file=wrapped_out_stream)
 
         # Now come the properties themselves.
         #
@@ -846,23 +857,27 @@ class Properties(object):
                 metadata = self.getmeta(key)
                 if not strip_meta and len(metadata):
                     for mkey in sorted(metadata):
-                        if mkey.startswith("__"):
+                        if ((isinstance(mkey, six.binary_type) and
+                                mkey.startswith(b"__"))
+                                or (isinstance(mkey, six.text_type) and
+                                    mkey.startswith("__"))):
+
                             continue
 
-                        print >> wrapped_out_stream, "#: %s=%s" % (
+                        print(u"#: %s=%s" % (
                             _escape_str(mkey),
                             _escape_str(metadata[mkey], True)
-                        )
+                        ), file=wrapped_out_stream)
 
                 # Now write the key-value pair itself.
-                print >> wrapped_out_stream, "%s=%s" % (
+                print(u"%s=%s" % (
                     _escape_str(key, escape_non_printing=properties_escape_nonprinting),
                     _escape_str(
                         self._properties[key],
                         True,
                         escape_non_printing=properties_escape_nonprinting,
                         line_breaks_only=not self._process_escapes_in_values)
-                )
+                ), file=wrapped_out_stream)
 
     def list(self, out_stream=sys.stderr):
         """
@@ -870,10 +885,13 @@ class Properties(object):
         :param out_stream: Where to print the property list.
         :return: None
         """
-        print >> out_stream, "-- listing properties --"
+        if hasattr(out_stream, 'buffer'):
+            out_stream = out_stream.buffer
+
+        print(u"-- listing properties --", file=out_stream)
         for key in self._properties:
             msg = "%s=%s" % (key, self._properties[key])
-            print >> out_stream, msg.encode("utf-8")
+            print(msg.encode("utf-8"), file=out_stream)
 
 
 def main():
@@ -898,16 +916,16 @@ def main():
     prog_name = os.path.basename(sys.argv[0])
 
     if len(sys.argv) < 2 or sys.argv[1] == "-h":
-        print >> sys.stderr, "Loads a property file and dumps it to stdout, optionally converting between encodings."
-        print >> sys.stderr, "Escape sequence handling can also be disabled (it is enabled by default).\n"
-        print >> sys.stderr, "Usage:"
-        print >> sys.stderr, " %s [-h] input_file [input_encoding [output_encoding [disable_escapes]]]\n" % \
-            prog_name
-        print >> sys.stderr, "The input and output encodings default to `utf-8'. If `false' is given for the"
-        print >> sys.stderr, "`disable_escapes' parameter, then escape sequences in property values are taken"
-        print >> sys.stderr, "literally, i. e. they are treated like normal characters. This will also cause"
-        print >> sys.stderr, "the writer to try hard not to output any escape sequences in values and thus it"
-        print >> sys.stderr, "will output everything literally, as long as this does not lead to invalid output."
+        print("Loads a property file and dumps it to stdout, optionally converting between encodings.", file=sys.stderr)
+        print("Escape sequence handling can also be disabled (it is enabled by default).\n", file=sys.stderr)
+        print("Usage:", file=sys.stderr)
+        print(" %s [-h] input_file [input_encoding [output_encoding [disable_escapes]]]\n" % \
+            prog_name, file=sys.stderr)
+        print("The input and output encodings default to `utf-8'. If `false' is given for the", file=sys.stderr)
+        print("`disable_escapes' parameter, then escape sequences in property values are taken", file=sys.stderr)
+        print("literally, i. e. they are treated like normal characters. This will also cause", file=sys.stderr)
+        print("the writer to try hard not to output any escape sequences in values and thus it", file=sys.stderr)
+        print("will output everything literally, as long as this does not lead to invalid output.", file=sys.stderr)
 
         return 1
 
@@ -920,22 +938,25 @@ def main():
         p = Properties(process_escapes_in_values)
         p.load(f, in_enc)
     except (IOError, EOFError, ParseError, UnicodeDecodeError, LookupError) as e:
-        print >> sys.stderr, "Error: Could not read input file:", e
+        print("Error: Could not read input file:", e, file=sys.stderr)
         return 2
 
     try:
         p.store(
-            sys.stdout,
-            u"File generated by %s (escapes in values: %s)" % (
+            sys.stdout.buffer,
+            "File generated by %s (escapes in values: %s)" % (
                 prog_name, process_escapes_in_values
             ),
             out_enc,
             False
         )
     except (LookupError, IOError, UnicodeEncodeError) as e:
-        print >> sys.stderr, "Error: Could not dump properties:", e
+        print("Error: Could not dump properties:", e, file=sys.stderr)
         return 3
 
     return 0
+
+if __name__ == '__main__':
+    main()
 
 # vim:set fileencoding=utf-8:
