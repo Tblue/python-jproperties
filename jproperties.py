@@ -797,9 +797,13 @@ class Properties(object):
         out_codec_info = codecs.lookup(encoding)
         properties_escape_nonprinting = strict and out_codec_info == codecs.lookup("latin_1")
 
+        # ugly ugly hack
         def output(*args, **kwargs):
-            kwargs['file'] = out_stream
-            print(_escape_non_ascii(*args), **kwargs)
+            data = (' '.join(args) + "\n").encode(
+                'utf-8', errors="jproperties.jbackslashreplace")
+            if six.PY3 and hasattr(out_stream, 'encoding'):
+                data = data.decode('utf-8')
+            out_stream.write(data)
 
         # Print initial comment line(s), if provided.
         if initial_comments is not None:
