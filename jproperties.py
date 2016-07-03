@@ -1,4 +1,4 @@
-# jProperties - Java Property file parser and writer for Python 2
+# jProperties - Java Property file parser and writer for Python
 #
 # Copyright (c) 2015, Tilman Blumenbach
 # All rights reserved.
@@ -550,8 +550,8 @@ class Properties(object):
                 try:
                     # Skip the line terminator
                     self._handle_eol()
-                    # Skip whitespace -- but only until the next EOL.
-                    self._skip_whitespace(True)
+                    self._skip_whitespace(False)
+                    self._skip_whitespace(False)
                 except EOFError:
                     pass
 
@@ -969,10 +969,15 @@ class Properties(object):
 
 
     def _interpolate_properties(self):
+        '''Interpolate property values. if A property value contains the name
+        of a different property in the form `${property.name}`, this function
+        will replace that property reference in the first property with the
+        referenced property's value.'''
+
         # steps: sort properties into those that need to be interpolated, and
         # those that don't; loop through those needing interpolation; if we can
-        # interpolate variables, do so; if no more interpolation in property,
-        # move to "final" list; if we ever loop through needs-interpolation
+        # interpolate variables, do so; if no more interpolation in current
+        # property, move it to "final" list; if we ever loop through holding
         # list without moving any to the final list, no more can be
         # interpolated, so raise error or what have you
 

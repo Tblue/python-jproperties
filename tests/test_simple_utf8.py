@@ -1,8 +1,9 @@
-# vim: fileencoding=utf8
+# vim: fileencoding=utf-8
 
 from jproperties import Properties
 
-def test_load_write_file(datadir, tmpdir):
+
+def test_simple_utf8_load_write_file(datadir, tmpdir):
     p = Properties()
 
     with datadir["simple.utf8.prop"].open("rb") as fh:

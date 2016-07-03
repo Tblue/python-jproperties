@@ -4,6 +4,7 @@ import six
 
 from jproperties import Properties
 
+
 def test_setmeta_bytes():
     p = Properties()
     p["a key"] = "the value", {b"metakey": b"metaval"}

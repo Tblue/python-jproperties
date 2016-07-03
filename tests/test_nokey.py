@@ -1,11 +1,13 @@
 from jproperties import Properties
 
+
 def test_nokey():
     p = Properties()
     p.load(b"= no key!")
 
     assert p.properties == {"": "no key!"}
     assert p[""] == ("no key!", {})
+
 
 def test_nokey_repeated():
     p = Properties()
