@@ -6,7 +6,6 @@ def test_repeated():
 
     assert p.properties == {"key": "value4"}
 
-
 def test_repeated_with_meta():
     p = Properties()
     p.load(b"""

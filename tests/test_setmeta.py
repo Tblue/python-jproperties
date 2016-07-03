@@ -1,9 +1,7 @@
 # vim: fileencoding=utf-8
 
 import six
-
 from jproperties import Properties
-
 
 def test_setmeta_bytes():
     p = Properties()
@@ -15,7 +13,6 @@ def test_setmeta_bytes():
     out.seek(0)
     assert out.read() == "#: metakey=metaval\na\\ key=the value\n"
 
-
 def test_setmeta_unicode():
     p = Properties()
     p["a key"] = "the value", {u"metakey": u"ünicode metävalue!"}
@@ -26,7 +23,6 @@ def test_setmeta_unicode():
     out.seek(0)
     text = u"#: metakey=\\u00fcnicode met\\u00e4value\\!\na\\ key=the value\n"
     assert out.read() == text
-
 
 def test_setmeta_int():
     p = Properties()

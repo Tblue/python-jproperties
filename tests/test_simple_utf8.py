@@ -2,7 +2,6 @@
 
 from jproperties import Properties
 
-
 def test_simple_utf8_load_write_file(datadir, tmpdir):
     p = Properties()
 

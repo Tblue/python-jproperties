@@ -230,7 +230,6 @@ class Properties(object):
     # Which characters do we treat as whitespace?
     _ALLWHITESPACE = _EOL + _WHITESPACE
 
-
     def __init__(self, process_escapes_in_values=True, use_interpolation=True, *args, **kwargs):
         """
         Create a new property file parser.
@@ -253,10 +252,8 @@ class Properties(object):
         # Initialize property data.
         self.clear()
 
-
     def __len__(self):
         return len(self._properties)
-
 
     def __getitem__(self, item):
         if not isinstance(item, six.string_types):
@@ -272,7 +269,6 @@ class Properties(object):
             self._properties[item],
             self._metadata.get(item, {})
         )
-
 
     def __setitem__(self, key, value):
         if not isinstance(key, six.string_types):
@@ -294,7 +290,6 @@ class Properties(object):
         self._properties[key] = value
         if metadata is not None:
             self._metadata[key] = metadata
-
 
     def __delitem__(self, key):
         if not isinstance(key, six.string_types):
@@ -319,35 +314,28 @@ class Properties(object):
         except ValueError:
             pass
 
-
     def __iter__(self):
         return self._properties.__iter__()
-
 
     def iterkeys(self):
         return self.__iter__()
 
-
     def __contains__(self, item):
         return item in self._properties
-
 
     @property
     def properties(self):
         return self._properties
-
 
     @properties.setter
     def properties(self, value):
         # noinspection PyAttributeOutsideInit
         self._properties = value
 
-
     @properties.deleter
     def properties(self):
         # noinspection PyAttributeOutsideInit
         self._properties = {}
-
 
     def getmeta(self, key):
         """
@@ -357,7 +345,6 @@ class Properties(object):
         :return: Metadata for the key (always a dictionary, but empty if there is no metadata).
         """
         return self._metadata.get(key, {})
-
 
     def setmeta(self, key, metadata):
         """
@@ -374,7 +361,6 @@ class Properties(object):
             raise TypeError("Metadata needs to be a dictionary")
 
         self._metadata[key] = metadata
-
 
     def _peek(self):
         """
@@ -397,7 +383,6 @@ class Properties(object):
 
         return self._lookahead
 
-
     def _getc(self):
         """
         Read the next character from the input stream and return it.
@@ -412,7 +397,6 @@ class Properties(object):
         self._lookahead = None
 
         return c
-
 
     def _handle_eol(self):
         """
@@ -440,7 +424,6 @@ class Properties(object):
             self._line_number += 1
             self._getc()
 
-
     def _skip_whitespace(self, stop_at_eol=False):
         """
         Skip all adjacent whitespace in the input stream.
@@ -466,7 +449,6 @@ class Properties(object):
                 # Simply skip this whitespace character.
                 self._getc()
 
-
     def _skip_natural_line(self):
         """Skip a natural line.
 
@@ -481,7 +463,6 @@ class Properties(object):
 
         # Increment line count if needed.
         self._handle_eol()
-
 
     def _parse_comment(self):
         """
@@ -523,7 +504,6 @@ class Properties(object):
         # comment line. Superb. Spectacular!
         self._next_metadata[key] = value
 
-
     def _handle_escape(self, allow_line_continuation=True):
         """Handle escape sequences like \r, \n etc.
 
@@ -550,8 +530,8 @@ class Properties(object):
                 try:
                     # Skip the line terminator
                     self._handle_eol()
-                    self._skip_whitespace(False)
-                    self._skip_whitespace(False)
+                    # Skip whitespace -- but only until the next EOL.
+                    self._skip_whitespace(True)
                 except EOFError:
                     pass
 
@@ -579,7 +559,6 @@ class Properties(object):
 
         # Else it's an unknown escape sequence. Swallow the backslash.
         return escaped_char
-
 
     def _parse_key(self, single_line_only=False):
         """Parse and return the key of a key-value pair, possibly split over multiple natural lines.
@@ -612,7 +591,6 @@ class Properties(object):
             key += self._getc()
 
         return key
-
 
     def _parse_value(self, single_line_only=False):
         """
@@ -657,7 +635,6 @@ class Properties(object):
 
         # Done!
         return value
-
 
     def _parse_logical_line(self):
         """
@@ -710,7 +687,6 @@ class Properties(object):
 
         return True
 
-
     def _parse(self):
         """
         Parse the entire input stream and record parsed key-value pairs.
@@ -746,7 +722,6 @@ class Properties(object):
         # Parsed metadata for the next key-value pair.
         self._next_metadata = {}
 
-
     # noinspection PyAttributeOutsideInit
     def clear(self):
         """
@@ -762,7 +737,6 @@ class Properties(object):
 
         # Key order. Populated when parsing so that key order can be preserved when writing the data back.
         self._key_order = []
-
 
     def load(self, source_data, encoding="iso-8859-1"):
         """
@@ -799,7 +773,6 @@ class Properties(object):
 
         self._parse()
 
-
     def store(self, out_stream, initial_comments=None, encoding="iso-8859-1", strict=True, strip_meta=True,
               timestamp=True):
         """
@@ -820,22 +793,13 @@ class Properties(object):
         :raise: LookupError (if encoding is unknown), IOError, UnicodeEncodeError (if data cannot be encoded as
                  `encoding`.
         """
-        # if hasattr(out_stream, 'buffer'):
-        #     out_stream = out_stream.buffer
-
-
         # Wrap the stream in an EncodedFile so that we don't need to always call str.encode().
         out_codec_info = codecs.lookup(encoding)
-        # wrapped_out_stream = out_codec_info.streamwriter(
-        #     out_stream,
-        #     "jproperties.jbackslashreplace"
-        # )
         properties_escape_nonprinting = strict and out_codec_info == codecs.lookup("latin_1")
 
         def output(*args, **kwargs):
             kwargs['file'] = out_stream
             print(_escape_non_ascii(*args), **kwargs)
-
 
         # Print initial comment line(s), if provided.
         if initial_comments is not None:
@@ -863,7 +827,6 @@ class Properties(object):
                 initial_comments
             )
 
-            # print(u"#" + six.text_type(initial_comments), file=wrapped_out_stream)
             output(u"#" + six.text_type(initial_comments))
 
         if timestamp:
@@ -872,15 +835,6 @@ class Properties(object):
             day_of_week = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
             month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
             now = time.gmtime()
-            # print(u"#%s %s %02d %02d:%02d:%02d UTC %04d" % (
-            #     day_of_week[now.tm_wday],
-            #     month[now.tm_mon - 1],
-            #     now.tm_mday,
-            #     now.tm_hour,
-            #     now.tm_min,
-            #     now.tm_sec,
-            #     now.tm_year
-            # ), file=wrapped_out_stream)
             output(u"#%s %s %02d %02d:%02d:%02d UTC %04d" % (
                     day_of_week[now.tm_wday],
                     month[now.tm_mon - 1],
@@ -924,26 +878,12 @@ class Properties(object):
 
                             continue
 
-                        # print(u"#: %s=%s" % (
-                        #     _escape_str(mkey),
-                        #     _escape_str(metadata[mkey], True)
-                        # ), file=wrapped_out_stream)
-
                         output(u"#: %s=%s" % (
                             _escape_str(mkey),
                             _escape_str(metadata[mkey], True)
                         ))
 
                 # Now write the key-value pair itself.
-                # print(u"%s=%s" % (
-                #     _escape_str(key, escape_non_printing=properties_escape_nonprinting),
-                #     _escape_str(
-                #         self._properties[key],
-                #         True,
-                #         escape_non_printing=properties_escape_nonprinting,
-                #         line_breaks_only=not self._process_escapes_in_values)
-                # ), file=wrapped_out_stream)
-
                 output(u"%s=%s" % (
                     _escape_str(key,
                         escape_non_printing=properties_escape_nonprinting),
@@ -961,7 +901,6 @@ class Properties(object):
         :param out_stream: Where to print the property list.
         :return: None
         """
-
         print("-- listing properties --", file=out_stream)
         for key in self._properties:
             msg = "%s=%s" % (key, self._properties[key])
