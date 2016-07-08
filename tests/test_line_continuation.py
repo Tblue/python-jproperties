@@ -4,7 +4,7 @@ from jproperties import Properties
 from StringIO import StringIO
 
 
-def test_line_contination_allowed():
+def test_line_continuation_allowed():
     p = Properties()
     p.load(
         StringIO(r"""
@@ -15,7 +15,8 @@ def test_line_contination_allowed():
 
     assert p.properties == {"multiline key": "value"}
 
-def test_line_contination_forbidden():
+
+def test_line_continuation_forbidden():
     # In metadata comments, line continuation is disabled.
 
     p = Properties()
@@ -30,3 +31,12 @@ def test_line_contination_forbidden():
     )
 
     assert p.properties == {"multiline key": "value", "value": "continuation"}
+
+
+def test_stray_line_continuation():
+    p = Properties()
+    p.load(
+        StringIO("key value\\")
+    )
+
+    assert p.properties == {"key": "value"}
