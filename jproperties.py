@@ -494,6 +494,9 @@ class Properties(object):
         :return: The evaluated escape sequence (string).
         :raise: EOFError and IOError.
         """
+        if self._peek() == "\\":
+            self._getc()
+
         try:
             # NB: We use _peek() here so that _handle_eol() can correctly recognize an escaped line terminator sequence
             #     below.
@@ -557,8 +560,7 @@ class Properties(object):
                 break
 
             if c == "\\":
-                # Skip the backslash and figure out how we need to handle the escape sequence.
-                self._getc()
+                # Figure out how we need to handle this escape sequence.
                 key += self._handle_escape(not single_line_only)
                 continue
 
@@ -600,8 +602,7 @@ class Properties(object):
                 break
 
             if c == "\\" and self._process_escapes_in_values:
-                # Skip the backslash and figure out how we need to handle the escape sequence.
-                self._getc()
+                # Figure out how we need to handle this escape sequence.
                 value += self._handle_escape(not single_line_only)
                 continue
 
