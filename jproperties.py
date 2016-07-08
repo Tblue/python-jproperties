@@ -529,15 +529,45 @@ class Properties(object):
 
         if escaped_char == "u":
             # Unicode escape: \uXXXX.
-            # Read the next four characters which MUST be present and make up the rest of the escape sequence.
-            uni_escape = u"\\u"
-            try:
-                for i in range(4):
-                    uni_escape += self._getc()
+            start_linenumber = self._line_number
 
-                return uni_escape.decode("unicode-escape")
-            except (EOFError, UnicodeDecodeError) as e:
-                raise ParseError(str(e), self._line_number, self._source_file)
+            try:
+                # Read the next four characters which MUST be present and make up the rest of the escape sequence.
+                codepoint_hex = u""
+                for i in range(4):
+                    codepoint_hex += self._getc()
+
+                # Decode the hex string to an int.
+                codepoint = int(codepoint_hex, base=16)
+
+                # If this is a high surrogate, we need a low surrogate as well, i. e. we expect that there is
+                # an immediately following Unicode escape sequence encoding a low surrogate.
+                #
+                # See: http://unicodebook.readthedocs.io/unicode_encodings.html#utf-16-surrogate-pairs
+                if 0xD800 <= codepoint <= 0xDBFF:
+                    codepoint2_hex = u""
+                    for i in range(6):
+                        codepoint2_hex += self._getc()
+
+                    if codepoint2_hex[:2] != r"\u":
+                        raise ParseError("High surrogate unicode escape sequence not followed by another"
+                                         "(low surrogate) unicode escape sequence.", start_linenumber, self._source_file)
+
+                    codepoint2 = int(codepoint2_hex[2:], base=16)
+                    if not (0xDC00 <= codepoint2 <= 0xDFFF):
+                        raise ParseError("Low surrogate unicode escape sequence expected after high surrogate"
+                                         "escape sequence, but got a non-low-surrogate unicode escape sequence.",
+                                         start_linenumber, self._source_file)
+
+                    final_codepoint = 0x10000
+                    final_codepoint += (codepoint & 0x03FF) << 10
+                    final_codepoint += codepoint2 & 0x03FF
+
+                    codepoint = final_codepoint
+
+                return unichr(codepoint)
+            except (EOFError, ValueError) as e:
+                raise ParseError(str(e), start_linenumber, self._source_file)
 
         # Else it's an unknown escape sequence. Swallow the backslash.
         return escaped_char
