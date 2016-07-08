@@ -546,16 +546,19 @@ class Properties(object):
                 # See: http://unicodebook.readthedocs.io/unicode_encodings.html#utf-16-surrogate-pairs
                 if 0xD800 <= codepoint <= 0xDBFF:
                     codepoint2_hex = u""
-                    for i in range(6):
-                        codepoint2_hex += self._getc()
+                    try:
+                        for i in range(6):
+                            codepoint2_hex += self._getc()
+                    except EOFError:
+                        pass
 
-                    if codepoint2_hex[:2] != r"\u":
-                        raise ParseError("High surrogate unicode escape sequence not followed by another"
+                    if codepoint2_hex[:2] != r"\u" or len(codepoint2_hex) != 6:
+                        raise ParseError("High surrogate unicode escape sequence not followed by another "
                                          "(low surrogate) unicode escape sequence.", start_linenumber, self._source_file)
 
                     codepoint2 = int(codepoint2_hex[2:], base=16)
                     if not (0xDC00 <= codepoint2 <= 0xDFFF):
-                        raise ParseError("Low surrogate unicode escape sequence expected after high surrogate"
+                        raise ParseError("Low surrogate unicode escape sequence expected after high surrogate "
                                          "escape sequence, but got a non-low-surrogate unicode escape sequence.",
                                          start_linenumber, self._source_file)
 
