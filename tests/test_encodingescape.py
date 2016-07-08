@@ -17,3 +17,10 @@ def test_euro(out_encoding):
 
     out.seek(0)
     assert out.read() == b"test=Euro\\: \\u20ac\n"
+
+    # Read it back again:
+    out.seek(0)
+    p2 = Properties()
+    p2.load(out)
+
+    assert p2.properties == {u"test": u"Euro: €"}
