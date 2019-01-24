@@ -46,6 +46,21 @@ import six
 PropertyTuple = namedtuple("PropertyTuple", ["data", "meta"])
 
 
+def _is_runtime_meta(key):
+    """
+    Check whether a metadata key refers to "runtime metadata" that should
+    not be dumped when writing out property files.
+
+    Such keys are those starting with two underscores, e. g. ``__foo``.
+
+    Handles both unicode and byte metadata keys.
+    """
+    return (
+        (isinstance(key, six.text_type)     and key.startswith(u"__")) or
+        (isinstance(key, six.binary_type)   and key.startswith(b"__"))
+    )
+
+
 def _escape_non_ascii(unicode_obj):
     """
     Escape non-printable (or non-ASCII) characters using Java-compatible Unicode escape sequences.
@@ -889,11 +904,7 @@ class Properties(object):
                 metadata = self.getmeta(key)
                 if not strip_meta and len(metadata):
                     for mkey in sorted(metadata):
-                        if ((isinstance(mkey, six.binary_type) and
-                                mkey.startswith(b"__"))
-                                or (isinstance(mkey, six.text_type) and
-                                    mkey.startswith("__"))):
-
+                        if _is_runtime_meta(mkey):
                             continue
 
                         print(
