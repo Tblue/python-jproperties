@@ -5,7 +5,7 @@ from setuptools import setup
 setup(
     name="jproperties",
     version="1.0.1",
-    description="Java Property file parser and writer for Python 2",
+    description="Java Property file parser and writer for Python",
     # Read the long description from our README.rst file, as UTF-8.
     long_description=codecs.open(
             os.path.join(
@@ -25,6 +25,7 @@ setup(
     url="https://github.com/Tblue/python-jproperties",
     download_url="https://github.com/Tblue/python-jproperties/archive/v1.0.1.tar.gz",
     py_modules=["jproperties"],
+    install_requires=["six>=1.10.0"],
     setup_requires=["pytest-runner ~= 2.0"],
     tests_require=[
         "pytest",
@@ -37,9 +38,10 @@ setup(
         "Intended Audience :: Information Technology",
         "License :: OSI Approved :: BSD License",
         "Operating System :: OS Independent",
-        "Programming Language :: Python :: 2 :: Only",
         "Programming Language :: Python :: 2.6",
         "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3.4",
+        "Programming Language :: Python :: 3.5",
         "Topic :: Software Development"
     ],
     license="BSD 3-Clause License; partially licensed under the Python Software Foundation License",

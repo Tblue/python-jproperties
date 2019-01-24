@@ -1,7 +1,7 @@
-jProperties for Python 2 |pypi-badge|
+jProperties for Python |pypi-badge|
 =====================================
 
-jProperties is a Java Property file parser and writer for Python 2. It aims to provide the same functionality
+jProperties is a Java Property file parser and writer for Python. It aims to provide the same functionality
 as `Java's Properties class <http://docs.oracle.com/javase/7/docs/api/java/util/Properties.html>`_, although
 currently the XML property format is not supported.
 
