@@ -787,7 +787,7 @@ class Properties(object):
         if isinstance(source_data, six.binary_type):
             # Byte string. Need to decode.
             self._source_file = six.StringIO(source_data.decode(encoding))
-        elif isinstance(source_data, six.string_types):
+        elif isinstance(source_data, six.text_type):
             # No need to decode.
             self._source_file = six.StringIO(source_data)
         elif encoding is not None:
