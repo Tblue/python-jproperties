@@ -1,5 +1,5 @@
 import pytest
-from StringIO import StringIO
+from six import BytesIO
 from jproperties import Properties, ParseError
 
 
@@ -8,7 +8,7 @@ def test_surrogate_roundtrip(out_encoding):
     p = Properties()
     p["surrogate"] = u"Muuusic \U0001D160"
 
-    out = StringIO()
+    out = BytesIO()
     p.store(out, encoding=out_encoding, timestamp=None)
 
     out.seek(0)
@@ -25,7 +25,7 @@ def test_surrogate_roundtrip_utf8():
     p = Properties()
     p["surrogate"] = u"Muuusic \U0001D160"
 
-    out = StringIO()
+    out = BytesIO()
     p.store(out, encoding="utf-8", timestamp=None)
 
     out.seek(0)
@@ -43,7 +43,7 @@ def test_surrogate_high_without_low__garbage():
 
     with pytest.raises(ParseError) as excinfo:
         p.load(
-            StringIO(b"surrogate=Muuusic \\ud834 foobar\n")
+            BytesIO(b"surrogate=Muuusic \\ud834 foobar\n")
         )
 
     # Caused by garbage after the first unicode escape
@@ -55,7 +55,7 @@ def test_surrogate_high_without_low__eof():
 
     with pytest.raises(ParseError) as excinfo:
         p.load(
-            StringIO(b"surrogate=Muuusic \\ud834\n")
+            BytesIO(b"surrogate=Muuusic \\ud834\n")
         )
 
     # Caused by short read (read 1 byte, wanted 6) after the first unicode escape
@@ -67,7 +67,7 @@ def test_surrogate_high_followed_by_non_low_surrogate_uniescape():
 
     with pytest.raises(ParseError) as excinfo:
         p.load(
-            StringIO(b"surrogate=Muuusic \\ud834\\u000a\n")
+            BytesIO(b"surrogate=Muuusic \\ud834\\u000a\n")
         )
 
     # Caused by short read (read 1 byte, wanted 6) after the first unicode escape

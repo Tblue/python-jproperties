@@ -1,7 +1,7 @@
 # vim: fileencoding=utf-8
 
 import pytest
-from StringIO import StringIO
+from six import BytesIO
 from jproperties import Properties
 
 @pytest.mark.parametrize("out_encoding", ["ascii", "iso-8859-1"])
@@ -12,7 +12,7 @@ def test_euro(out_encoding):
     # so it should be encoded as "\u20ac".
     p["test"] = u"Euro: €"
 
-    out = StringIO()
+    out = BytesIO()
     p.store(out, encoding=out_encoding, timestamp=None)
 
     out.seek(0)
