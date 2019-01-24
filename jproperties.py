@@ -253,9 +253,6 @@ class Properties(object):
         if not isinstance(item, six.string_types):
             raise TypeError("Property keys must be of type str or unicode")
 
-        if isinstance(item, six.binary_type):
-            item = item.decode('utf-8')
-
         if item not in self._properties:
             raise KeyError("Key not found")
 
@@ -275,9 +272,6 @@ class Properties(object):
         if not isinstance(value, six.string_types):
             raise TypeError("Property values must be of type str or unicode")
 
-        if isinstance(value, six.binary_type):
-            value = value.decode('utf-8')
-
         if metadata is not None and not isinstance(metadata, dict):
             raise TypeError("Metadata needs to be a dictionary")
 
@@ -288,9 +282,6 @@ class Properties(object):
     def __delitem__(self, key):
         if not isinstance(key, six.string_types):
             raise TypeError("Property keys must be of type str or unicode")
-
-        if isinstance(key, six.binary_type):
-            key = key.decode('utf-8')
 
         if key not in self._properties:
             raise KeyError("Key not found")
