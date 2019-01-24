@@ -129,7 +129,7 @@ Version history
 Version 2.0.0
 +++++++++++++
 
-- **Python 3 support!** Thanks to @tboz203, who did a lot of the work. (#1)
+- **Python 3 support!** Thanks to @tboz203, who did a lot of the work. (`#1`_)
 - Drop support for Python 2.6.
 
 Version 1.0.1
@@ -143,6 +143,8 @@ Version 1.0
 
 - Initial release
 
+
+.. _#1: https://github.com/Tblue/python-jproperties/pull/1
 
 ..
     NB: Without a trailing question mark in the following image URL, the
