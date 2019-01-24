@@ -589,7 +589,7 @@ class Properties(object):
 
                     codepoint = final_codepoint
 
-                return unichr(codepoint)
+                return six.unichr(codepoint)
             except (EOFError, ValueError) as e:
                 raise ParseError(str(e), start_linenumber, self._source_file)
 
