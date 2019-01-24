@@ -799,9 +799,9 @@ class Properties(object):
                 unescaped line terminators.
         :param encoding: The encoding to write the data in.
         :param strict: Set to True to exactly behave like the Java property file writer. In particular, this will cause
-            any non-printing characters in property keys and values to be escaped using \\u.... escape sequences if the
-            encoding is set to iso-8859-1. False causes sane behaviour, i. e. only use unicode escape sequences if the
-            characters cannot be represented in the target encoding.
+            any non-printing characters in property keys and values to be escaped using "<BACKSLASH>uXXXX" escape
+            sequences if the encoding is set to iso-8859-1. False causes sane behaviour, i. e. only use unicode escape
+            sequences if the characters cannot be represented in the target encoding.
         :param strip_meta: Whether to strip metadata when writing.
         :param timestamp: True to write a comment line with the current time and date after the initial comments.
         :return: None.
