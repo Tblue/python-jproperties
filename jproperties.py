@@ -970,10 +970,10 @@ def main():
         print("Loads a property file and dumps it to stdout, optionally converting between encodings.", file=sys.stderr)
         print("Escape sequence handling can also be disabled (it is enabled by default).\n", file=sys.stderr)
         print("Usage:", file=sys.stderr)
-        print(" %s [-h] input_file [input_encoding [output_encoding [disable_escapes]]]\n" % \
+        print(" %s [-h] input_file [input_encoding [output_encoding [process_escapes]]]\n" % \
             prog_name, file=sys.stderr)
         print("The input and output encodings default to `utf-8'. If `false' is given for the", file=sys.stderr)
-        print("`disable_escapes' parameter, then escape sequences in property values are taken", file=sys.stderr)
+        print("`process_escapes' parameter, then escape sequences in property values are taken", file=sys.stderr)
         print("literally, i. e. they are treated like normal characters. This will also cause", file=sys.stderr)
         print("the writer to try hard not to output any escape sequences in values and thus it", file=sys.stderr)
         print("will output everything literally, as long as this does not lead to invalid output.", file=sys.stderr)
