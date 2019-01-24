@@ -793,7 +793,7 @@ class Properties(object):
         """
         Write a plain text representation of the properties to a stream.
 
-        :param out_stream: The target stream where the data should be written.
+        :param out_stream: The target stream where the data should be written. Should be opened in binary mode.
         :type initial_comments: unicode
         :param initial_comments: A string to output as an initial comment (a commented "header"). May safely contain
                 unescaped line terminators.
@@ -810,15 +810,11 @@ class Properties(object):
         """
         # Wrap the stream in an EncodedFile so that we don't need to always call str.encode().
         out_codec_info = codecs.lookup(encoding)
+        wrapped_out_stream = out_codec_info.streamwriter(
+            out_stream,
+            "jproperties.jbackslashreplace"
+        )
         properties_escape_nonprinting = strict and out_codec_info == codecs.lookup("latin_1")
-
-        # ugly ugly hack
-        def output(*args, **kwargs):
-            data = (' '.join(args) + "\n").encode(
-                'utf-8', errors="jproperties.jbackslashreplace")
-            if six.PY3 and hasattr(out_stream, 'encoding'):
-                data = data.decode('utf-8')
-            out_stream.write(data)
 
         # Print initial comment line(s), if provided.
         if initial_comments is not None:
@@ -846,7 +842,7 @@ class Properties(object):
                 initial_comments
             )
 
-            output(u"#" + six.text_type(initial_comments))
+            print(u"#" + initial_comments, file=wrapped_out_stream)
 
         if timestamp:
             # Print a comment line with the current time and date.
@@ -854,7 +850,8 @@ class Properties(object):
             day_of_week = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
             month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
             now = time.gmtime()
-            output(u"#%s %s %02d %02d:%02d:%02d UTC %04d" % (
+            print(
+                u"#%s %s %02d %02d:%02d:%02d UTC %04d" % (
                     day_of_week[now.tm_wday],
                     month[now.tm_mon - 1],
                     now.tm_mday,
@@ -862,7 +859,9 @@ class Properties(object):
                     now.tm_min,
                     now.tm_sec,
                     now.tm_year
-                ))
+                ),
+                file=wrapped_out_stream
+            )
 
         # Now come the properties themselves.
         #
@@ -897,21 +896,30 @@ class Properties(object):
 
                             continue
 
-                        output(u"#: %s=%s" % (
-                            _escape_str(mkey),
-                            _escape_str(metadata[mkey], True)
-                        ))
+                        print(
+                            u"#: %s=%s" % (
+                                _escape_str(mkey),
+                                _escape_str(metadata[mkey], True)
+                            ),
+                            file=wrapped_out_stream
+                        )
 
                 # Now write the key-value pair itself.
-                output(u"%s=%s" % (
-                    _escape_str(key,
-                        escape_non_printing=properties_escape_nonprinting),
-                    _escape_str(
-                        self._properties[key],
-                        True,
-                        escape_non_printing=properties_escape_nonprinting,
-                        line_breaks_only=not self._process_escapes_in_values)
-                ))
+                print(
+                    u"%s=%s" % (
+                        _escape_str(
+                            key,
+                            escape_non_printing=properties_escape_nonprinting
+                        ),
+                        _escape_str(
+                            self._properties[key],
+                            True,
+                            escape_non_printing=properties_escape_nonprinting,
+                            line_breaks_only=not self._process_escapes_in_values
+                        )
+                    ),
+                    file=wrapped_out_stream
+                )
 
 
     def list(self, out_stream=sys.stderr):
