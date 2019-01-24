@@ -126,6 +126,12 @@ The ``properties`` property is nevertheless useful to set many default values be
 Version history
 ---------------
 
+Version 2.0.0
++++++++++++++
+
+- **Python 3 support!** Thanks to @tboz203, who did a lot of the work. (#1)
+- Drop support for Python 2.6.
+
 Version 1.0.1
 +++++++++++++
 
