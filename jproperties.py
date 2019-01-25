@@ -27,17 +27,17 @@
 # CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 from __future__ import print_function
 
 import codecs
-import itertools
 import functools
+import itertools
 import os
 import re
 import sys
 import time
-
-from collections import namedtuple
+from collections import MutableMapping, namedtuple
 
 import six
 
@@ -225,7 +225,7 @@ class ParseError(PropertyError):
         )
 
 
-class Properties(object):
+class Properties(MutableMapping, object):
     """
     A parser for Java property files.
 
@@ -316,12 +316,6 @@ class Properties(object):
 
     def __iter__(self):
         return self._properties.__iter__()
-
-    def iterkeys(self):
-        return self.__iter__()
-
-    def __contains__(self, item):
-        return item in self._properties
 
     @property
     def properties(self):
