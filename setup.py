@@ -25,7 +25,7 @@ setup(
     url="https://github.com/Tblue/python-jproperties",
     download_url="https://github.com/Tblue/python-jproperties/archive/v2.0.0.tar.gz",
     py_modules=["jproperties"],
-    install_requires=["six ~= 1.10"],
+    install_requires=["six ~= 1.12"],
     setup_requires=["pytest-runner ~= 2.0"],
     tests_require=[
         "pytest",
