@@ -1,5 +1,5 @@
 jProperties for Python |pypi-badge|
-=====================================
+===================================
 
 jProperties is a Java Property file parser and writer for Python. It aims to provide the same functionality
 as `Java's Properties class <http://docs.oracle.com/javase/7/docs/api/java/util/Properties.html>`_, although
@@ -88,6 +88,37 @@ Note that metadata support is always enabled. The only thing that is optional is
 Metadata keys beginning with two underscores (``__``) are not written to the output stream by the ``store()`` method.
 Thus, they can be used to attach "runtime-only" metadata to properties. Currently, however, metadata with such keys is
 still read from the input stream by ``load()``; this should probably be considered erroneous behaviour.
+
+Documenting Properties
+^^^^^^^^^^^^^^^^^^^^^^
+
+The comments after a property definition can be added to the metadata
+with the key ``_doc`` if the ``metadoc=True`` optional argument is given
+to the ``load`` method.  This allows properties to be documented in the
+properties file.  For example, the properties file::
+
+    #: _severity=fatal
+    10001=Fatal internal error: %s
+    # A fatal internal error occurred.  Please re-run the command
+    # with the -D option to generate additional debug information.
+
+The following example code shows how this documentation can be accessed.
+
+.. code:: python
+
+    from jproperties import Properties
+
+    p = Properties()
+    with open("foobar.properties", "rb") as f:
+        p.load(f, "utf-8", metadoc=True)
+    # Print the explicitly defined '_severity' metadata
+    print("Severity: ", p.getmeta("10001")['_severity'])
+    # Print the implicitly defined '_doc' metadata
+    print("Explanation: ", p.getmeta("10001")['_doc'])
+
+The documentation can be extracted from properties files and used to generate
+pages in the overall system documentation or can be accessed via options
+for command line utilities.
 
 Caveats
 ^^^^^^^

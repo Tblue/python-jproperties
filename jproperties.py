@@ -449,14 +449,21 @@ class Properties(MutableMapping, object):
         This simply skips all characters until a line terminator sequence is encountered
         (which is skipped as well).
 
-        :return: None.
-        :raise: EOFError and IOError.
+        :return: The text on the line.
+        :raise: IOError.
         """
-        while self._peek() not in self._EOL:
-            self._getc()
+        line = ""
 
-        # Increment line count if needed.
-        self._handle_eol()
+        try:
+            while self._peek() not in self._EOL:
+                line += self._getc()
+
+            # Increment line count if needed.
+            self._handle_eol()
+        except EOFError:
+            pass
+
+        return line
 
     def _parse_comment(self):
         """
@@ -475,7 +482,13 @@ class Properties(MutableMapping, object):
 
         # If the next character is a colon, then this is a metadata comment. If not, then we skip this comment.
         if self._peek() != ":":
-            self._skip_natural_line()
+            docstr = self._skip_natural_line()
+            if self._metadoc and self._prev_key:
+                prev_metadata = self._metadata.setdefault(self._prev_key, {})
+                prev_metadata.setdefault('_doc', "")
+                if docstr.startswith(" "):
+                   docstr = docstr[1:]
+                prev_metadata['_doc'] += docstr + "\n"
             return
 
         # Skip the metadata marker (the colon).
@@ -712,6 +725,7 @@ class Properties(MutableMapping, object):
         if len(self._next_metadata):
             self._metadata[key] = self._next_metadata
             self._next_metadata = {}
+        self._prev_key = key
 
         return True
 
@@ -726,7 +740,7 @@ class Properties(MutableMapping, object):
             pass
 
     # noinspection PyAttributeOutsideInit
-    def reset(self):
+    def reset(self, metadoc=False):
         """
         Reset the parser state so that a new file can be parsed.
 
@@ -746,6 +760,12 @@ class Properties(MutableMapping, object):
         # Parsed metadata for the next key-value pair.
         self._next_metadata = {}
 
+        # To handle comments after the key/value pair as documentation, we
+        # need the previous key (to update the associated metadata) and
+        # the flag on whether or not this handling should happen.
+        self._prev_key = None
+        self._metadoc = metadoc
+
     # noinspection PyAttributeOutsideInit
     def clear(self):
         """
@@ -762,7 +782,7 @@ class Properties(MutableMapping, object):
         # Key order. Populated when parsing so that key order can be preserved when writing the data back.
         self._key_order = []
 
-    def load(self, source_data, encoding="iso-8859-1"):
+    def load(self, source_data, encoding="iso-8859-1", metadoc=False):
         """
         Load, decode and parse an input stream (or string).
 
@@ -776,7 +796,7 @@ class Properties(MutableMapping, object):
         :raise: IOError, EOFError, ParseError, UnicodeDecodeError (if source_data needs to be decoded),
                  LookupError (if encoding is unknown).
         """
-        self.reset()
+        self.reset(metadoc)
 
         if isinstance(source_data, six.binary_type):
             # Byte string. Need to decode.
