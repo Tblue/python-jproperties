@@ -41,3 +41,9 @@ def test_multiline_docstr_with_empty_lines():
     p.load("K = V\n# A comment\n#   more comments\n\n\n# trailer\n", metadoc=True)
     assert p.properties == {"K": "V"}
     assert p.getmeta("K") == {"_doc": "A comment\n  more comments\ntrailer\n"}
+
+def test_multiline_docstr_with_empty_comment_lines():
+    p = Properties()
+    p.load("K = V\n# A comment\n#   more comments\n#\n# trailer\n", metadoc=True)
+    assert p.properties == {"K": "V"}
+    assert p.getmeta("K") == {"_doc": "A comment\n  more comments\n\ntrailer\n"}
