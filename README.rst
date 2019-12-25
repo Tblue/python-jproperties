@@ -104,7 +104,7 @@ properties file.  For example, the properties file::
 
 The following example code shows how this documentation can be accessed.
 
-.. code:: text
+.. code:: python
 
     from jproperties import Properties
 
