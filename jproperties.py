@@ -450,14 +450,19 @@ class Properties(MutableMapping, object):
         (which is skipped as well).
 
         :return: The text on the line.
-        :raise: EOFError and IOError.
+        :raise: IOError.
         """
         line = ""
-        while self._peek() not in self._EOL:
-            line += self._getc()
 
-        # Increment line count if needed.
-        self._handle_eol()
+        try:
+            while self._peek() not in self._EOL:
+                line += self._getc()
+
+            # Increment line count if needed.
+            self._handle_eol()
+        except EOFError:
+            pass
+
         return line
 
     def _parse_comment(self):
