@@ -2,7 +2,7 @@ from jproperties import Properties
 
 def test_skip_docstr():
     p = Properties()
-    p.load("# A comment\nK = V")
+    p.load("# A comment\nK = V\n# More comments\n")
     assert p.properties == {"K": "V"}
     assert p.getmeta("K") == {}
 
@@ -23,3 +23,9 @@ def test_multiline_docstr():
     p.load("#\nK = V\n# A comment\n#   more comments\n", metadoc=True)
     assert p.properties == {"K": "V"}
     assert p.getmeta("K") == {"_doc": "A comment\n  more comments\n"}
+
+def test_multiline_docstr_with_empty_lines():
+    p = Properties()
+    p.load("K = V\n# A comment\n#   more comments\n\n\n# trailer\n", metadoc=True)
+    assert p.properties == {"K": "V"}
+    assert p.getmeta("K") == {"_doc": "A comment\n  more comments\ntrailer\n"}
