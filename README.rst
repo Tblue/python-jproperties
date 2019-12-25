@@ -157,6 +157,12 @@ The ``properties`` property is nevertheless useful to set many default values be
 Version history
 ---------------
 
+Version 2.1.0
++++++++++++++
+
+- Add support for optional documentation comments (see `Documenting
+  Properties`_). Thanks to @mkrohan! (`#5`_)
+
 Version 2.0.0
 +++++++++++++
 
@@ -175,6 +181,7 @@ Version 1.0
 - Initial release
 
 
+.. _#5: https://github.com/Tblue/python-jproperties/pull/5
 .. _#1: https://github.com/Tblue/python-jproperties/pull/1
 
 ..
