@@ -116,7 +116,7 @@ The following example code shows how this documentation can be accessed.
     # Print the implicitly defined '_doc' metadata
     print("Explanation: ", p.getmeta("10001")['_doc'])
 
-The documentation can extracted from properties files and used to generate
+The documentation can be extracted from properties files and used to generate
 pages in the overall system documentation or can be accessed via options
 for command line utilities.
 

@@ -755,7 +755,7 @@ class Properties(MutableMapping, object):
         # Parsed metadata for the next key-value pair.
         self._next_metadata = {}
 
-        # The handle comments after the key/value pair as documentation
+        # To handle comments after the key/value pair as documentation, we
         # need the previous key (to update the associated metadata) and
         # the flag on whether or not this handling should happen.
         self._prev_key = None
