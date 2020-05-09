@@ -37,7 +37,12 @@ import os
 import re
 import sys
 import time
-from collections import MutableMapping, namedtuple
+from collections import namedtuple
+
+try:
+    from collections import MutableMapping
+except ImportError:
+    from collections.abc import MutableMapping
 
 import six
 
