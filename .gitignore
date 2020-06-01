@@ -61,3 +61,6 @@ target/
 
 # vim files
 .*.swp
+
+# virtualenv
+.python_jproperties
