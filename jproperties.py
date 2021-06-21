@@ -35,9 +35,15 @@ import functools
 import itertools
 import os
 import re
+import struct
 import sys
 import time
-from collections import MutableMapping, namedtuple
+
+if sys.version_info < (3, 3):
+    from collections import MutableMapping
+else:
+    from collections.abc import MutableMapping
+from collections import namedtuple
 
 import six
 
@@ -595,8 +601,11 @@ class Properties(MutableMapping, object):
                     final_codepoint += codepoint2 & 0x03FF
 
                     codepoint = final_codepoint
+                try:
+                    return six.unichr(codepoint)
+                except ValueError:
+                    return struct.pack('i', codepoint).decode('utf-32')
 
-                return six.unichr(codepoint)
             except (EOFError, ValueError) as e:
                 raise ParseError(str(e), start_linenumber, self._source_file)
 
