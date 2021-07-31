@@ -19,7 +19,8 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python }}
-      - run: |
+      - name: Run tests
+        run: |
           set -ex
 
           pip install --user virtualenv
