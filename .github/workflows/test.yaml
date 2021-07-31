@@ -25,10 +25,12 @@ jobs:
         run: |
           set -ex
           python --version
+      - name: Install tox
+        run: |
+          set -ex
+          pip install --user tox
       - name: Run tests
         shell: bash
         run: |
           set -ex
-
-          pip install --user tox
           tox -e "py${PYTHON_VERSION//.}"
