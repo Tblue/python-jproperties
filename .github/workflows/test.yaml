@@ -46,9 +46,7 @@ jobs:
           TOXENV=py$(cut -d . -f 1-2 <<<"${PYTHON_VERSION?}" | tr -d .)
           export TOXENV
 
-          echo "::group::Running tox (env \"${TOXENV?}\")"
           tox
-          echo ::endgroup::
       - name: Archive test coverage report
         uses: actions/upload-artifact@v2
         with:
