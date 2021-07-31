@@ -49,7 +49,6 @@ jobs:
           echo "::group::Running tox (env \"${TOXENV?}\")"
           tox
           echo ::endgroup::
-        continue-on-error: true
       - name: Archive test coverage report
         uses: actions/upload-artifact@v2
         with:
