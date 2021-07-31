@@ -40,7 +40,7 @@ import time
 from collections import namedtuple
 
 import six
-from six.moves.collections_abc.MutableMapping
+from six.moves.collections_abc import MutableMapping
 
 
 # This represents a combination of a value and metadata for a property key.
