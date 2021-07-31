@@ -24,7 +24,7 @@ setup(
     },
     url="https://github.com/Tblue/python-jproperties",
     py_modules=["jproperties"],
-    install_requires=["six ~= 1.12"],
+    install_requires=["six ~= 1.13"],
     setup_requires=[
         "pytest-runner ~= 2.0",
         "setuptools_scm ~= 3.3"
