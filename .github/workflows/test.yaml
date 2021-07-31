@@ -31,5 +31,5 @@ jobs:
           set -ex
 
           pip install --user tox
-          tox -e "${PYTHON_VERSION//.}"
+          tox -e "py${PYTHON_VERSION//.}"
           python setup.py test
