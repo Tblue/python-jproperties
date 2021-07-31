@@ -65,6 +65,7 @@ Reading from and writing to the same file-like object
 
         # Do stuff with the p object...
 
+        f.seek(0)
         f.truncate(0)
         p.store(f, encoding="utf-8")
 
