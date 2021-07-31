@@ -14,8 +14,11 @@ jobs:
           - '3.8'
           - '3.9'
           - '3.10.0-beta.4'
-    name: Python ${{ matrix.python }}
-    runs-on: ubuntu-latest
+        os:
+          - ubuntu-latest
+          - macos-latest
+    name: Python ${{ matrix.python }} (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
     env:
       PYTHON_VERSION: ${{ matrix.python }}
     steps:
@@ -23,14 +26,18 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python }}
-      - name: Determine Python version
+      - name: Determine environment information
         run: |
           set -ex
+
+          uname -a
           python --version
       - name: Install tox
         run: |
           set -ex
+
           pip install --user tox
+          echo "${HOME?}/.local/bin" >>"${GITHUB_PATH?}"
       - name: Run tests
         shell: bash
         run: |
