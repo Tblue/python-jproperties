@@ -27,7 +27,7 @@ setup(
     install_requires=["six ~= 1.12"],
     setup_requires=[
         "pytest-runner ~= 2.0",
-        "setuptools_scm ~= 5.0"
+        "setuptools_scm ~= 3.3"
     ],
     tests_require=[
         "pytest",
