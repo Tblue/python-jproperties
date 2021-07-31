@@ -32,4 +32,3 @@ jobs:
 
           pip install --user tox
           tox -e "py${PYTHON_VERSION//.}"
-          python setup.py test
