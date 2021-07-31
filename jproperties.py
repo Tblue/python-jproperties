@@ -35,6 +35,7 @@ import functools
 import itertools
 import os
 import re
+import struct
 import sys
 import time
 from collections import namedtuple
@@ -597,7 +598,7 @@ class Properties(MutableMapping, object):
 
                     codepoint = final_codepoint
 
-                return six.unichr(codepoint)
+                return struct.pack("=I", codepoint).decode("utf-32")
             except (EOFError, ValueError) as e:
                 raise ParseError(str(e), start_linenumber, self._source_file)
 
