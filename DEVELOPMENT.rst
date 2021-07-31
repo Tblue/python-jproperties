@@ -1,8 +1,25 @@
 Development Environment
 =======================
 
+Supported Python versions
+-------------------------
+
+See `tox.ini <./tox.ini>`_.
+
+Running tests
+-------------
+
 Suggestion 1
 ~~~~~~~~~~~~
+
+We have a GitHub Actions Workflow that runs the tests against all supported Python versions, so just
+push your changes to your own branch, and let the CI system run the tests.
+
+Suggestion 2
+~~~~~~~~~~~~
+
+With a bit of manual work, you can also run the tests locally:
+
 Use `pyenv <https://github.com/pyenv/pyenv>`_, and install all the versions supported by the plugin.
 Double-check on `tox.ini <./tox.ini>`_.
 
