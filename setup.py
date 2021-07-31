@@ -42,6 +42,9 @@ setup(
         "Operating System :: OS Independent",
         "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
         "Topic :: Software Development"
     ],
     license="BSD 3-Clause License; partially licensed under the Python Software Foundation License",

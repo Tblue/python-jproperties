@@ -154,6 +154,13 @@ The ``properties`` property is nevertheless useful to set many default values be
     file_obj = codecs.open("foobar.properties", "rb", "iso-8859-1")
     prop_obj.load(file_obj, encoding=None)
 
+
+Development
+++++++++++++++++
+
+If you want to help development, there is
+`overview documentation <./DEVELOPMENT.rst>`_
+
 Version history
 ---------------
 
