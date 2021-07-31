@@ -14,18 +14,22 @@ jobs:
           - '3.8'
     name: Python ${{ matrix.python }}
     runs-on: ubuntu-latest
+    env:
+      PYTHON_VERSION: ${{ matrix.python }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python }}
+      - name: Determine Python version
+        run: |
+          set -ex
+          python --version
       - name: Run tests
+        shell: bash
         run: |
           set -ex
 
-          pip install --user virtualenv
-          virtualenv .python_jproperties
-          . ./.python_jproperties/bin/activate
-
-          python --version
+          pip install --user tox
+          tox -e "${PYTHON_VERSION//.}"
           python setup.py test
