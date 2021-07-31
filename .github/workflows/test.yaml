@@ -34,5 +34,11 @@ jobs:
       - name: Run tests
         shell: bash
         run: |
-          set -ex
-          tox -e "py${PYTHON_VERSION//.}"
+          set -exo pipefail
+
+          TOXENV=py$(cut -d . -f 1-2 <<<"${PYTHON_VERSION?}" | tr -d .)
+          export TOXENV
+
+          echo "::group::Running tox (env \"${TOXENV?}\")"
+          tox
+          echo ::endgroup::
