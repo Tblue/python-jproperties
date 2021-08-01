@@ -26,13 +26,7 @@ setup(
     py_modules=["jproperties"],
     install_requires=["six ~= 1.13"],
     setup_requires=[
-        "pytest-runner ~= 2.0",
         "setuptools_scm ~= 3.3"
-    ],
-    tests_require=[
-        "pytest",
-        "pytest-cov",
-        "pytest-datadir-ng"
     ],
     classifiers=[
         "Development Status :: 5 - Production/Stable",
