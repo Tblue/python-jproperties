@@ -165,7 +165,7 @@ If you want to help development, there is
 Version history
 ---------------
 
-Version 2.2.0
+Version 2.1.1
 +++++++++++++
 
 - Compatibility with Python 3.10. (`#10`_)
