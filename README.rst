@@ -165,6 +165,14 @@ If you want to help development, there is
 Version history
 ---------------
 
+Version 2.2.0
++++++++++++++
+
+- Compatibility with Python 3.10. (`#10`_)
+- Documentation improvements. (`#13`_)
+- Support decoding surrogate pairs on narrow Python builds (such as
+  Python 2.7 on Mac OS X). (`#14`_)
+
 Version 2.1.0
 +++++++++++++
 
@@ -191,6 +199,9 @@ Version 1.0
 
 .. _#5: https://github.com/Tblue/python-jproperties/pull/5
 .. _#1: https://github.com/Tblue/python-jproperties/pull/1
+.. _#10: https://github.com/Tblue/python-jproperties/pull/10
+.. _#13: https://github.com/Tblue/python-jproperties/pull/13
+.. _#14: https://github.com/Tblue/python-jproperties/pull/14
 
 ..
     NB: Without a trailing question mark in the following image URL, the
