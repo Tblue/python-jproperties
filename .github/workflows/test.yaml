@@ -50,6 +50,6 @@ jobs:
       - name: Archive test coverage report
         uses: actions/upload-artifact@v2
         with:
-          name: coverage-report
+          name: coverage-report-${{ matrix.python }}-${{ matrix.os }}
           path: htmlcov
           if-no-files-found: error
