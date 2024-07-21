@@ -33,6 +33,8 @@ jobs:
 
           uname -a
           python --version
+
+          env
       - name: Install tox
         run: |
           set -ex
