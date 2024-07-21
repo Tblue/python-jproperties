@@ -1,6 +1,23 @@
 Changelog
 =========
 
+Version 3.0.0 (UNRELEASED)
+++++++++++++++++++++++++++
+
+Breaking changes
+****************
+
+- Drop support for Python versions older than 3.8. Most notably, this means
+  that Python 2.7 is not supported anymore either.
+
+Improvements
+************
+
+- Build process modernization:
+
+  - Use ``pyproject.toml`` instead of ``setup.py``.
+  - Use modern ``setuptools_scm`` version (fixes `#15`_).
+
 Version 2.1.2
 +++++++++++++
 
@@ -49,6 +66,7 @@ Version 1.0
 .. _#10: https://github.com/Tblue/python-jproperties/pull/10
 .. _#13: https://github.com/Tblue/python-jproperties/pull/13
 .. _#14: https://github.com/Tblue/python-jproperties/pull/14
+.. _#15: https://github.com/Tblue/python-jproperties/issues/15
 
 
 .. vim: tw=79
