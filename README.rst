@@ -18,7 +18,7 @@ You can install jProperties using `pip <https://pip.pypa.io/>`_::
 GPG-signed Git release tags
 +++++++++++++++++++++++++++
 
-From version 3.0.0 and newer, all Git release tags such as ``v3.0.0`` are signed with the following GPG key:
+From version 2.1.2 and newer, all Git release tags such as ``v2.1.2`` are signed with the following GPG key:
 
 - User ID: ``Tilman Blumenbach <tilman+git@ax86.net>``
 - Fingerprint: ``B67BD719C23DC2A403E15EB102DE477F6DDE8B17``
