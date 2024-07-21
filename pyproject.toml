@@ -1,0 +1,54 @@
+[build-system]
+requires = [
+    "setuptools >= 69.5",
+    "setuptools_scm >= 8.1",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "jproperties"
+authors = [
+    { name = "Tilman Blumenbach", email = "tilman+pypi@ax86.net" },
+]
+description = "Java Property file parser and writer for Python"
+readme = "README.rst"
+license = { file = "LICENSE" }
+keywords = [
+    "java", "property", "properties", "file", "parser", "reader", "writer"
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 2.7",
+    "Programming Language :: Python :: 3.5",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development"
+]
+
+dependencies = [
+    "six ~= 1.13"
+]
+requires-python = ">= 2.7"
+
+dynamic = ["version"]
+
+[project.urls]
+Repository = "https://github.com/Tblue/python-jproperties"
+Documentation = "https://github.com/Tblue/python-jproperties/blob/master/README.rst"
+Changelog = "https://github.com/Tblue/python-jproperties/blob/master/CHANGELOG.rst"
+Issues = "https://github.com/Tblue/python-jproperties/issues"
+
+[project.scripts]
+propconv = "jproperties:main"
+
+[tool.setuptools_scm]
+# This section deliberately left empty.
