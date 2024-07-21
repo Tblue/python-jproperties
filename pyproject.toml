@@ -22,22 +22,20 @@ classifiers = [
     "Intended Audience :: Information Technology",
     "License :: OSI Approved :: BSD License",
     "Operating System :: OS Independent",
-    "Programming Language :: Python :: 2.7",
-    "Programming Language :: Python :: 3.5",
-    "Programming Language :: Python :: 3.6",
-    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3 :: Only",
     "Topic :: Software Development"
 ]
 
 dependencies = [
+    # TODO: Drop dependency since we only support Python 3 nowadays.
     "six ~= 1.13"
 ]
-requires-python = ">= 2.7"
+requires-python = ">= 3.8"
 
 dynamic = ["version"]
 
