@@ -165,7 +165,7 @@ If you want to help development, there is
 Version history
 ---------------
 
-See file [CHANGELOG.rst](CHANGELOG.rst).
+See file `CHANGELOG.rst <./CHANGELOG.rst>`_.
 
 
 .. _#5: https://github.com/Tblue/python-jproperties/pull/5
