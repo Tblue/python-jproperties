@@ -33,6 +33,7 @@ Version 1.0
 - Initial release
 
 
+.. _Documenting Properties: ./README.rst#documenting-properties
 .. _#5: https://github.com/Tblue/python-jproperties/pull/5
 .. _#1: https://github.com/Tblue/python-jproperties/pull/1
 .. _#10: https://github.com/Tblue/python-jproperties/pull/10
