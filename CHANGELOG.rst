@@ -17,6 +17,7 @@ Improvements
 
   - Use ``pyproject.toml`` instead of ``setup.py``.
   - Use modern ``setuptools_scm`` version (fixes `#15`_).
+- Sign GPG release tags (see README for details).
 
 Version 2.1.2
 +++++++++++++

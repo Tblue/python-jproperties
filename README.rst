@@ -15,6 +15,16 @@ You can install jProperties using `pip <https://pip.pypa.io/>`_::
 
     pip install jproperties
 
+GPG-signed Git release tags
++++++++++++++++++++++++++++
+
+From version 3.0.0 and newer, all Git release tags such as ``v3.0.0`` are signed with the following GPG key:
+
+- User ID: ``Tilman Blumenbach <tilman+git@ax86.net>``
+- Fingerprint: ``B67BD719C23DC2A403E15EB102DE477F6DDE8B17``
+- Download: Use any major PGP keyserver or
+  https://www.ax86.net/attachments/pgp-key.asc
+
 Overview
 --------
 
@@ -176,3 +186,6 @@ See file `CHANGELOG.rst <./CHANGELOG.rst>`_.
 .. |pypi-badge| image:: https://img.shields.io/pypi/v/jproperties.svg?
     :align: middle
     :target: https://pypi.python.org/pypi/jproperties
+
+
+.. vim: tw=120
