@@ -24,6 +24,7 @@ setup(
     },
     url="https://github.com/Tblue/python-jproperties",
     py_modules=["jproperties"],
+    python_requires='>= 2.7',
     install_requires=["six ~= 1.13"],
     setup_requires=[
         "setuptools_scm ~= 3.3"

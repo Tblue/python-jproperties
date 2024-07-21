@@ -165,6 +165,13 @@ If you want to help development, there is
 Version history
 ---------------
 
+Version 2.1.2
++++++++++++++
+
+- Set minium required Python version in package metadata.
+
+This is the last version supporting Python 2.7.
+
 Version 2.1.1
 +++++++++++++
 
