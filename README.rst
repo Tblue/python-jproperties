@@ -168,12 +168,6 @@ Version history
 See file `CHANGELOG.rst <./CHANGELOG.rst>`_.
 
 
-.. _#5: https://github.com/Tblue/python-jproperties/pull/5
-.. _#1: https://github.com/Tblue/python-jproperties/pull/1
-.. _#10: https://github.com/Tblue/python-jproperties/pull/10
-.. _#13: https://github.com/Tblue/python-jproperties/pull/13
-.. _#14: https://github.com/Tblue/python-jproperties/pull/14
-
 ..
     NB: Without a trailing question mark in the following image URL, the
         generated HTML will contain an <object> element instead of an <img>

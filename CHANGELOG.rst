@@ -31,3 +31,10 @@ Version 1.0
 +++++++++++
 
 - Initial release
+
+
+.. _#5: https://github.com/Tblue/python-jproperties/pull/5
+.. _#1: https://github.com/Tblue/python-jproperties/pull/1
+.. _#10: https://github.com/Tblue/python-jproperties/pull/10
+.. _#13: https://github.com/Tblue/python-jproperties/pull/13
+.. _#14: https://github.com/Tblue/python-jproperties/pull/14
