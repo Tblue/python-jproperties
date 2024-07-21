@@ -40,7 +40,10 @@ jobs:
           set -ex
 
           pip install --user tox
+
           echo "${HOME?}/.local/bin" >>"${GITHUB_PATH?}"
+          # For Mac OS X:
+          echo "${HOME?}/Library/Python/${PYTHON_VERSION?}/bin" >>"${GITHUB_PATH?}"
       - name: Run tests
         shell: bash
         run: |
