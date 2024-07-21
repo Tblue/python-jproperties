@@ -1,6 +1,16 @@
 Changelog
 =========
 
+Version 2.1.2
++++++++++++++
+
+- Set minium required Python version in package metadata.
+
+This is the last version supporting Python 2.7.
+
+**Note:** Code for this release can be found on branch ``python2-legacy``,
+although the only thing that changed in this release is the package metadata.
+
 Version 2.1.1
 +++++++++++++
 
@@ -24,8 +34,8 @@ Version 2.0.0
 Version 1.0.1
 +++++++++++++
 
-- This is the first "proper" PyPI release, with proper PyPI metadata and proper PyPI distributions.
-  Nothing else has changed.
+- This is the first "proper" PyPI release, with proper PyPI metadata and proper
+  PyPI distributions.  Nothing else has changed.
 
 Version 1.0
 +++++++++++
@@ -39,3 +49,6 @@ Version 1.0
 .. _#10: https://github.com/Tblue/python-jproperties/pull/10
 .. _#13: https://github.com/Tblue/python-jproperties/pull/13
 .. _#14: https://github.com/Tblue/python-jproperties/pull/14
+
+
+.. vim: tw=79
