@@ -1,3 +1,4 @@
+from io import BytesIO
 from jproperties import Properties
 
 def test_basic_equals_sign():
@@ -29,3 +30,13 @@ def test_basic_key_only():
     p.load('cheese\n')
 
     assert p.properties == {'cheese': ''}
+
+def test_basic_escape_write():
+    p = Properties()
+    p['key'] = 'hello\nworld'
+
+    out = BytesIO()
+    p.store(out, timestamp=None)
+
+    out.seek(0)
+    assert out.read() == b'key=hello\\nworld\n'
