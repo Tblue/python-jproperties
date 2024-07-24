@@ -123,24 +123,26 @@ def _jbackslashreplace_error_handler(err):
     return _escape_non_ascii(err.object[err.start:err.end]), err.end
 
 
-
-def _escape_str(raw_str, only_leading_spaces=False, escape_non_printing=False, line_breaks_only=False):
+def _escape_str(raw_str, only_leading_spaces=False, escape_non_printing=False, line_breaks_only=False,
+                pretty_print=False):
     """
     Escape a string so that it can safely be written as a key/value to a property file.
 
     :type raw_str: unicode
     :param raw_str: The string to escape.
     :param only_leading_spaces: Controls which whitespace characters to escape (other illegal, non-whitespace characters
-            are always escaped). If True, then only escape a possibly present single leading space character (this is
-             used for the value of a key-value pair). If False, escape all whitespace characters.
+        are always escaped). If True, then only escape a possibly present single leading space character (this is used
+        for the value of a key-value pair). If False, escape all whitespace characters.
     :param escape_non_printing: Whether to escape legal, but non-printable ASCII characters as well.
-    :param line_breaks_only: Only escape \r, \n and \f and not characters like : and =. Note: This does not
-    invalidate/influence the other parameters like only_leading_spaces -- spaces are always escaped as per
-    only_leading_spaces.
-    :rtype : unicode
+    :param line_breaks_only: Only escape CR, LF, FF; but not characters like ``:`` and ``=``. Note: This does not
+        invalidate/influence the other parameters like only_leading_spaces -- spaces are always escaped as per
+        only_leading_spaces.
+    :param pretty_print: True to pretty-print the string. At the moment, this splits the string over multiple physical
+        lines if it contains newlines. escape_non_printing takers precedence over this parameter.
+    :rtype: unicode
     :return: The escaped string.
     """
-    # We NEED an unicode object. It's worth a try.
+    # We NEED a unicode object. It's worth a try.
     if isinstance(raw_str, six.binary_type):
         # consider bringing in chardet...
         raw_str = raw_str.decode("utf-8")
@@ -149,29 +151,43 @@ def _escape_str(raw_str, only_leading_spaces=False, escape_non_printing=False, l
         # This works nicely for integers etc.
         raw_str = six.text_type(raw_str)
 
+    # escape_non_printing conflicts with pretty-printing: For escape_non_printing, we want the entire string to be part
+    # of a single natural line, and pretty printing might break that assumption.
+    pretty_print = pretty_print and not escape_non_printing
+    pretty_print_suffix = '\\\n    ' if pretty_print else ''
+
     # Do simple whitespace substitutions.
+    #
+    # TODO: Compile the two regexes and reuse them.
     trans_dict = {
-        ord(u"\r"): u"\\r",
-        ord(u"\n"): u"\\n",
-        ord(u"\f"): u"\\f"
+        '\r\n': rf'\r\n{pretty_print_suffix}',
+        '\r': rf'\r{pretty_print_suffix}',
+        '\n': rf'\n{pretty_print_suffix}',
+        '\f': r'\f',
     }
 
-    # Do we want to be conform to the specs fully?
+    # Do we want to conform to the specs fully?
     if not line_breaks_only:
         # Yes, so escape more possibly ambiguous characters as well.
         trans_dict.update(
             {
-                ord(u"#"): u"\\#",
-                ord(u"!"): u"\\!",
-                ord(u"="): u"\\=",
-                ord(u":"): u"\\:",
-                ord(u"\\"): u"\\\\",
-                ord(u"\t"): u"\\t",
+                "#":  r"\#",
+                "!":  r"\!",
+                "=":  r"\=",
+                ":":  r"\:",
+                "\t": r'\t',
+                "\\": r'\\',
             }
         )
 
     # All right, now we can actually do the substitutions.
-    escaped_str = raw_str.translate(trans_dict)
+    #
+    # This replaces all the keys of trans_dict by their values, while doing a single left-to-right scan of the string.
+    escaped_str = re.sub(
+       '|'.join(f'(?:{re.escape(x)})' for x in trans_dict),
+       lambda m: trans_dict[m[0]],
+       raw_str
+    )
 
     # Now escape either all space characters or only a possibly present single space at the beginning.
     if not only_leading_spaces:
@@ -180,7 +196,9 @@ def _escape_str(raw_str, only_leading_spaces=False, escape_non_printing=False, l
         escaped_str = re.sub(u"^ ", u"\\\\ ", escaped_str)
 
     # Do we want to escape non-printing characters as well?
-    if escape_non_printing:
+    #
+    # As noted above, this conflicts with pretty-printing, so we don't do it if pretty-printing is enabled.
+    if escape_non_printing and not pretty_print:
         escaped_str = _escape_non_ascii(escaped_str)
 
     return escaped_str
@@ -820,24 +838,27 @@ class Properties(MutableMapping, object):
         self._parse()
 
     def store(self, out_stream, initial_comments=None, encoding="iso-8859-1", strict=True, strip_meta=True,
-              timestamp=True):
+              timestamp=True, pretty_print=False):
         """
         Write a plain text representation of the properties to a stream.
 
         :param out_stream: The target stream where the data should be written. Should be opened in binary mode.
         :type initial_comments: unicode
         :param initial_comments: A string to output as an initial comment (a commented "header"). May safely contain
-                unescaped line terminators.
+            unescaped line terminators.
         :param encoding: The encoding to write the data in.
         :param strict: Set to True to exactly behave like the Java property file writer. In particular, this will cause
             any non-printing characters in property keys and values to be escaped using "<BACKSLASH>uXXXX" escape
-            sequences if the encoding is set to iso-8859-1. False causes sane behaviour, i. e. only use unicode escape
+            sequences if the encoding is set to iso-8859-1. False causes sane behaviour, i.e. only use unicode escape
             sequences if the characters cannot be represented in the target encoding.
         :param strip_meta: Whether to strip metadata when writing.
         :param timestamp: True to write a comment line with the current time and date after the initial comments.
+        :param pretty_print: True to pretty-print keys and values. At the moment, this splits keys/values containing
+            newlines over multiple physical lines. Note that if strict=True, this option might be disabled automatically
+            in order to conform to the behavior of the Java property file writer.
         :return: None.
         :raise: LookupError (if encoding is unknown), IOError, UnicodeEncodeError (if data cannot be encoded as
-                 `encoding`.
+            `encoding`.
         """
         # Wrap the stream in an EncodedFile so that we don't need to always call str.encode().
         out_codec_info = codecs.lookup(encoding)
@@ -936,13 +957,15 @@ class Properties(MutableMapping, object):
                     u"%s=%s" % (
                         _escape_str(
                             key,
-                            escape_non_printing=properties_escape_nonprinting
+                            escape_non_printing=properties_escape_nonprinting,
+                            pretty_print=pretty_print
                         ),
                         _escape_str(
                             self._properties[key],
                             True,
                             escape_non_printing=properties_escape_nonprinting,
-                            line_breaks_only=not self._process_escapes_in_values
+                            line_breaks_only=not self._process_escapes_in_values,
+                            pretty_print=pretty_print
                         )
                     ),
                     file=wrapped_out_stream
@@ -986,7 +1009,7 @@ def main():
         print("Loads a property file and dumps it to stdout, optionally converting between encodings.", file=sys.stderr)
         print("Escape sequence handling can also be disabled (it is enabled by default).\n", file=sys.stderr)
         print("Usage:", file=sys.stderr)
-        print(" %s [-h] input_file [input_encoding [output_encoding [process_escapes]]]\n" % \
+        print(" %s [-h] input_file [input_encoding [output_encoding [process_escapes [pretty_print]]]]\n" % \
             prog_name, file=sys.stderr)
         print("The input and output encodings default to `utf-8'. If `false' is given for the", file=sys.stderr)
         print("`process_escapes' parameter, then escape sequences in property values are taken", file=sys.stderr)
@@ -999,6 +1022,7 @@ def main():
     in_enc = "utf-8" if len(sys.argv) < 3 else sys.argv[2]
     out_enc = "utf-8" if len(sys.argv) < 4 else sys.argv[3]
     process_escapes_in_values = len(sys.argv) < 5 or sys.argv[4].lower() != "false"
+    pretty_print = len(sys.argv) >= 6 and sys.argv[5].lower() == "true"
 
     try:
         f = open(sys.argv[1], "rb")
@@ -1015,7 +1039,8 @@ def main():
                 prog_name, process_escapes_in_values
             ),
             out_enc,
-            False
+            False,
+            pretty_print=pretty_print
         )
     except (LookupError, IOError, UnicodeEncodeError) as e:
         print("Error: Could not dump properties:", e, file=sys.stderr)
