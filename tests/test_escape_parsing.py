@@ -1,7 +1,7 @@
 # vim: fileencoding=utf-8
 
 from jproperties import Properties
-from six import BytesIO
+from io import BytesIO
 
 
 def test_simple_escape_parsing():

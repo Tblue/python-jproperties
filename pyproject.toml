@@ -31,10 +31,7 @@ classifiers = [
     "Topic :: Software Development"
 ]
 
-dependencies = [
-    # TODO: Drop dependency since we only support Python 3 nowadays.
-    "six ~= 1.13"
-]
+dependencies = []
 requires-python = ">= 3.8"
 
 dynamic = ["version"]
