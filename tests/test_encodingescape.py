@@ -1,7 +1,7 @@
 # vim: fileencoding=utf-8
 
 import pytest
-from six import BytesIO
+from io import BytesIO
 from jproperties import Properties
 
 @pytest.mark.parametrize("out_encoding", ["ascii", "iso-8859-1"])

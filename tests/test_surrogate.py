@@ -1,5 +1,5 @@
 import pytest
-from six import BytesIO
+from io import BytesIO
 from jproperties import Properties, ParseError
 
 
